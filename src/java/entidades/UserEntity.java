@@ -14,6 +14,8 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  * Entidad de la clase User.
@@ -29,21 +31,21 @@ public class UserEntity implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @Column(unique=true)
+    @Column(unique=true,name="login")
     private String username;
-    @Column
+   
     private String email;
-    @Column
+    
     private String fullName;
-    @Column
+    
     private String password;
-    @Column
+    
     @Enumerated(EnumType.STRING)
     private UserStatusType UserStatus;
-    @Column
+    
     @Enumerated(EnumType.STRING)
     private UserPrivilegeType UserPrivilege;
-    @Column
+    @Temporal(TemporalType.TIMESTAMP)   
     private LocalDateTime lastPasswordChange;
     
     /**

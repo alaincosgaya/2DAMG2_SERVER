@@ -4,13 +4,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import static javax.persistence.CascadeType.ALL;
-import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -25,19 +27,17 @@ public class ZonaEntity implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long idZona;
-    @Column
     private String nombreZona;
-    @Column
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date fechaCreacionZona;
-    @Column
+    @ManyToOne
     private GranjaEntity granja;
-    @Column
     @OneToMany(cascade=ALL, mappedBy="zona")
     private List<AnimalEntity> animales;
-    @Column
-    @ManyToMany
-    @JoinTable
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name="trabajador-zona", schema="G2Lauserri", 
+            joinColumns = @JoinColumn(name="idZona", referencedColumnName="idZona"),
+            inverseJoinColumns = @JoinColumn(name="idTrabajador", referencedColumnName="id"))
     private List<TrabajadorEntity> trabajadores;
     
     public ZonaEntity(){

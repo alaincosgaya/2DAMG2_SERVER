@@ -3,7 +3,6 @@ package entidades;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -25,20 +24,15 @@ public class AnimalEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long idAnimal;
-    @Column
     private String nombreAnimal;
-    @Column
     @Enumerated(EnumType.STRING)
     private TipoAnimal tipo;
-    @Column
     @Enumerated(EnumType.STRING)
     private EstadoAnimal estado;
-    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    @Temporal(javax.persistence.TemporalType.DATE)
     private Date fechaNacimiento;
-    @Column
     @Enumerated(EnumType.STRING)
     private SexoAnimal sexo;
-    @Column
     @ManyToOne
     private ZonaEntity zona;
 

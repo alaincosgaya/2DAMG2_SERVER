@@ -23,7 +23,6 @@ import javax.persistence.Table;
 public class GranjeroEntity extends UserEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    @Column
     @OneToMany(cascade=ALL, mappedBy="granjero")
     private List<GranjaEntity> granjas;
     

@@ -9,7 +9,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import javax.persistence.Column;
+import static javax.persistence.CascadeType.ALL;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -29,18 +29,14 @@ public class GranjaEntity implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long idGranja;
-    @Column
     private String nombreGranja;
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date fechaCreacion;
-    @Column
     @ManyToOne
     private GranjeroEntity granjero;
-    @Column
-    @OneToMany
+    @OneToMany(cascade=ALL, mappedBy="zona")
     private List<ZonaEntity> zonas;
-    @Column
-    @OneToMany
+    @OneToMany(cascade=ALL, mappedBy="granja")
     private List<ContratoEntity> contratos;
 
     public GranjaEntity() {

@@ -11,29 +11,30 @@ import java.util.Objects;
 import static javax.persistence.CascadeType.ALL;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 /**
  *
  * @author Alain Cosgaya
  */
 @Entity
+@Table(name="trabajador",schema="G2Lauserri")
 public class TrabajadorEntity extends UserEntity implements Serializable {
 
     private static final Long serialVersionUID = 1L;
     
-    
-    @Column
     private Long salario;
-    @Column
-    @OneToMany(cascade=ALL, mappedBy="")
-    private List<ContratoEntity> contratos;
-    @Column
-    @ManyToMany()
+    
+    @OneToMany(cascade=ALL, mappedBy="trabajador")
+    private List<ContratoEntity> contratos; 
+    
+    @ManyToMany(mappedBy="trabajadores",fetch = FetchType.EAGER)
     private List<ZonaEntity> zonas;
 
     public Long getSalario() {

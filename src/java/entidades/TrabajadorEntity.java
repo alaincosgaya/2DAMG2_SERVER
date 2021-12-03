@@ -18,6 +18,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -25,6 +27,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name="trabajador",schema="G2Lauserri")
+@XmlRootElement
 public class TrabajadorEntity extends UserEntity implements Serializable {
 
     private static final Long serialVersionUID = 1L;
@@ -45,6 +48,7 @@ public class TrabajadorEntity extends UserEntity implements Serializable {
         this.salario = salario;
     }
 
+    @XmlTransient
     public List<ContratoEntity> getContratos() {
         return contratos;
     }
@@ -53,6 +57,7 @@ public class TrabajadorEntity extends UserEntity implements Serializable {
         this.contratos = contratos;
     }
 
+    @XmlTransient
     public List<ZonaEntity> getZonas() {
         return zonas;
     }

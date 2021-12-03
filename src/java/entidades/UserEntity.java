@@ -3,6 +3,7 @@ package entidades;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,6 +17,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Entidad de la clase User.
@@ -24,6 +26,7 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(name="user",schema="G2Lauserri")
 @Inheritance(strategy = InheritanceType.JOINED)
+@XmlRootElement
 public class UserEntity implements Serializable{
     
     private static final Long serialVersionUID = 1L;
@@ -46,7 +49,7 @@ public class UserEntity implements Serializable{
     @Enumerated(EnumType.STRING)
     private UserPrivilegeType UserPrivilege;
     @Temporal(TemporalType.TIMESTAMP)   
-    private LocalDateTime lastPasswordChange;
+    private Date lastPasswordChange;
     
     /**
      * Constructor vacio de la entidad User.
@@ -172,7 +175,7 @@ public class UserEntity implements Serializable{
      * recoge lastPasswordChange
      * @return lastPasswordChange
      */
-    public LocalDateTime getLastPasswordChange() {
+    public Date getLastPasswordChange() {
         return lastPasswordChange;
     }
 
@@ -180,7 +183,7 @@ public class UserEntity implements Serializable{
      * set lastPasswordChange
      * @param lastPasswordChange
      */
-    public void setLastPasswordChange(LocalDateTime lastPasswordChange) {
+    public void setLastPasswordChange(Date lastPasswordChange) {
         this.lastPasswordChange = lastPasswordChange;
     }
 

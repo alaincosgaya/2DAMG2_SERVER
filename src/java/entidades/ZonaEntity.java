@@ -16,6 +16,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -23,6 +25,7 @@ import javax.persistence.Temporal;
  */
 @Entity
 @Table(name="zona", schema = "G2Lauserri")
+@XmlRootElement
 public class ZonaEntity implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -36,7 +39,7 @@ public class ZonaEntity implements Serializable{
     private List<AnimalEntity> animales;
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name="trabajador-zona", schema="G2Lauserri", 
-            joinColumns = @JoinColumn(name="idZona", referencedColumnName="idZona"),
+            joinColumns = @JoinColumn(referencedColumnName="idZona"),
             inverseJoinColumns = @JoinColumn(name="idTrabajador", referencedColumnName="id"))
     private List<TrabajadorEntity> trabajadores;
     
@@ -76,6 +79,7 @@ public class ZonaEntity implements Serializable{
         this.granja = granja;
     }
 
+    @XmlTransient
     public List<AnimalEntity> getAnimales() {
         return animales;
     }
@@ -84,6 +88,7 @@ public class ZonaEntity implements Serializable{
         this.animales = animales;
     }
 
+    @XmlTransient
     public List<TrabajadorEntity> getTrabajadores() {
         return trabajadores;
     }

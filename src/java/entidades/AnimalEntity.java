@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
@@ -19,6 +20,7 @@ import javax.persistence.Temporal;
  */
 @Entity
 @Table(name = "animal", schema = "G2Lauserri")
+@XmlRootElement
 public class AnimalEntity implements Serializable {
 
     @Id

@@ -18,6 +18,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -25,6 +27,7 @@ import javax.persistence.Temporal;
  */
 @Entity
 @Table(name ="granja", schema ="G2Lauserri")
+@XmlRootElement
 public class GranjaEntity implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -116,6 +119,7 @@ public class GranjaEntity implements Serializable{
      * 
      * @return zonas
      */
+    @XmlTransient
     public List<ZonaEntity> getZonas() {
         return zonas;
     }
@@ -131,6 +135,7 @@ public class GranjaEntity implements Serializable{
      * 
      * @return contratos
      */
+    @XmlTransient
     public List<ContratoEntity> getContratos() {
         return contratos;
     }

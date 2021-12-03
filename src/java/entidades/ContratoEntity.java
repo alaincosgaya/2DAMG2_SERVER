@@ -17,6 +17,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
@@ -24,6 +25,7 @@ import javax.persistence.Temporal;
  */
 @Entity
 @Table(name="contrato", schema="G2Lauserri")
+@XmlRootElement
 public class ContratoEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;

@@ -8,7 +8,10 @@ package entidades;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
+import static javax.persistence.CascadeType.ALL;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
@@ -20,7 +23,8 @@ import javax.persistence.Table;
 public class GranjeroEntity extends UserEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    
+    @Column
+    @OneToMany(cascade=ALL, mappedBy="granjero")
     private List<GranjaEntity> granjas;
     
     public GranjeroEntity (){

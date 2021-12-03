@@ -15,6 +15,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 
 /**
@@ -22,6 +23,7 @@ import javax.persistence.Temporal;
  * @author Jonathan Camacho
  */
 @Entity
+@Table(name="contrato", schema="G2Lauserri")
 public class ContratoEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;

@@ -38,7 +38,7 @@ public class ZonaEntity implements Serializable{
     @OneToMany(cascade=ALL, mappedBy="zona")
     private List<AnimalEntity> animales;
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name="trabajador-zona", schema="G2Lauserri", 
+    @JoinTable(name="trabajadorZona", schema="G2Lauserri", 
             joinColumns = @JoinColumn(referencedColumnName="idZona"),
             inverseJoinColumns = @JoinColumn(name="idTrabajador", referencedColumnName="id"))
     private List<TrabajadorEntity> trabajadores;

@@ -37,7 +37,7 @@ public class GranjaEntity implements Serializable{
     private Date fechaCreacion;
     @ManyToOne
     private GranjeroEntity granjero;
-    @OneToMany(cascade=ALL, mappedBy="zona")
+    @OneToMany(cascade=ALL, mappedBy="granja")
     private List<ZonaEntity> zonas;
     @OneToMany(cascade=ALL, mappedBy="granja")
     private List<ContratoEntity> contratos;

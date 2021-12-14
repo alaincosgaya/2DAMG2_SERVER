@@ -5,7 +5,11 @@
  */
 package restful;
 
+import static com.sun.xml.internal.ws.spi.db.BindingContextFactory.LOGGER;
 import entidades.AnimalEntity;
+import entidades.EstadoAnimal;
+import entidades.SexoAnimal;
+import entidades.TipoAnimal;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -83,9 +87,77 @@ public class AnimalEntityFacadeREST extends AbstractFacade<AnimalEntity> {
         return String.valueOf(super.count());
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    @GET
+    @Path("animal/{nombreAnimal}")
+    @Produces({MediaType.APPLICATION_XML})
+    public List<AnimalEntity> animalesPorNombre(@PathParam("nombreAnimal") String nombreAnimal) {
+
+        List<AnimalEntity> animales = null;
+        try {
+            LOGGER.info("realizando listado de animales según su nombre");
+            animales = em.createNamedQuery("animalesPorNombre").setParameter("nombreAnimal", nombreAnimal).getResultList();
+
+        } catch (Exception e) {
+            LOGGER.severe("Error al listar los animales según su nombre");
+        }
+        return animales;
+    }
+
+    @GET
+    @Path("animal/{tipo}")
+    @Produces({MediaType.APPLICATION_XML})
+    public List<AnimalEntity> animalesPorTipo(@PathParam("tipo") TipoAnimal tipo) {
+
+        List<AnimalEntity> animales = null;
+        try {
+            LOGGER.info("realizando listado de animales según su tipo");
+            animales = em.createNamedQuery("animalesPorTipo").setParameter("tipo", tipo).getResultList();
+
+        } catch (Exception e) {
+            LOGGER.severe("Error al listar los animales según su tipo");
+        }
+        return animales;
+    }
+
+    @GET
+    @Path("animal/{sexo}")
+    @Produces({MediaType.APPLICATION_XML})
+    public List<AnimalEntity> animalesPorTipo(@PathParam("sexo") SexoAnimal sexo) {
+
+        List<AnimalEntity> animales = null;
+        try {
+            LOGGER.info("realizando listado de animales según su sexo");
+            animales = em.createNamedQuery("animalesPorSexo").setParameter("sexo", sexo).getResultList();
+
+        } catch (Exception e) {
+            LOGGER.severe("Error al listar los animales según su sexo");
+        }
+        return animales;
+    }
+
+    @GET
+    @Path("animal/{estado}")
+    @Produces({MediaType.APPLICATION_XML})
+    public List<AnimalEntity> animalesPorTipo(@PathParam("estado") EstadoAnimal estado) {
+
+        List<AnimalEntity> animales = null;
+        try {
+            //logger
+            LOGGER.info("realizando listado de animales según su estado");
+            animales = em.createNamedQuery("animalesPorEstado").setParameter("estado", estado).getResultList();
+
+        } catch (Exception e) {
+            LOGGER.severe("Error al listar los animales según su estado");
+
+        }
+        return animales;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
     @Override
     protected EntityManager getEntityManager() {
         return em;
     }
-    
+
 }

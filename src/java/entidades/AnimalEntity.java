@@ -10,6 +10,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -18,6 +20,20 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  * @author Jonathan Camacho
  */
+@NamedQueries({
+	@NamedQuery(
+		name="animalesPorNombre",query="SELECT a FROM AnimalEntity a WHERE a.nombreAnimal=:nombreAnimal"
+	),
+	@NamedQuery(
+		name="animalesPorTipo",query="SELECT a FROM AnimalEntity a WHERE a.tipo=:tipo"
+	),
+	@NamedQuery(
+		name="animalesPorSexo",query="SELECT a FROM AnimalEntity a WHERE a.sexo=:sexo"
+	),
+	@NamedQuery(
+		name="animalesPorEstado",query="SELECT a FROM AnimalEntity a WHERE a.estado=:estado"
+	)
+})
 @Entity
 @Table(name = "animal", schema = "G2Lauserri")
 @XmlRootElement

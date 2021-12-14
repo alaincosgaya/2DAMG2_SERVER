@@ -83,9 +83,51 @@ public class ZonaEntityFacadeREST extends AbstractFacade<ZonaEntity> {
         return String.valueOf(super.count());
     }
 
+    @GET
+    @Path("zona/{nombreZona}")
+    @Produces({MediaType.APPLICATION_XML})
+    public List<ZonaEntity> zonasPorNombre(@PathParam("nombreZona") String nombreZona) /*throws el error*/ {
+
+        List<ZonaEntity> zonas = null;
+        try {
+            zonas = em.createNamedQuery("zonasPorNombre").setParameter("nombreZona", nombreZona).getResultList();
+        } catch (Exception e) {
+
+        }
+        return zonas;
+    }
+
+    @GET
+    @Path("zona/{tipoAnimal}")
+    @Produces({MediaType.APPLICATION_XML})
+    public List<ZonaEntity> zonasPorAnimal(@PathParam("tipoAnimal") String tipoAnimal) /*throws el error*/ {
+
+        List<ZonaEntity> zonas = null;
+        try {
+            zonas = em.createNamedQuery("zonasPorAnimal").setParameter("tipoAnimal", tipoAnimal).getResultList();
+        } catch (Exception e) {
+
+        }
+        return zonas;
+    }
+
+    @GET
+    @Path("zona/{username}")
+    @Produces({MediaType.APPLICATION_XML})
+    public List<ZonaEntity> zonasPorTrabajador(@PathParam("username") String username) /*throws el error*/ {
+
+        List<ZonaEntity> zonas = null;
+        try {
+            zonas = em.createNamedQuery("zonasPorTrabajador").setParameter("username", username).getResultList();
+        } catch (Exception e) {
+
+        }
+        return zonas;
+    }
+
     @Override
     protected EntityManager getEntityManager() {
         return em;
     }
-    
+
 }

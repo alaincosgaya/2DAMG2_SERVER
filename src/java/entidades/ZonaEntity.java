@@ -13,6 +13,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -23,6 +25,20 @@ import javax.xml.bind.annotation.XmlTransient;
  *
  * @author Idoia Ormaetxea
  */
+@NamedQueries({
+	@NamedQuery(
+		name="zonasPorNombre", 
+		query="SELECT z FROM ZonaEntity z WHERE z.nombreZona=:nombreZona"
+),
+@NamedQuery(
+		name="zonasPorAnimal", 
+		query="SELECT z.animales.TipoAnimal.tipo FROM ZonaEntity z WHERE z.animales.TipoAnimal.tipo=:tipoAnimal"
+),
+@NamedQuery(
+		name="zonasPorTrabajador", 
+		query="SELECT z.trabajadores.username FROM ZonaEntity z WHERE z.trabajadores.username=:username"
+)
+})
 @Entity
 @Table(name="zona", schema = "G2Lauserri")
 @XmlRootElement

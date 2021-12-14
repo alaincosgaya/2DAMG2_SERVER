@@ -28,7 +28,6 @@ public class TrabajadorEntity extends UserEntity implements Serializable {
 
     private static final Long serialVersionUID = 1L;
     
-    private Long salario;
     
     @OneToMany(cascade=ALL, mappedBy="trabajador")
     private List<ContratoEntity> contratos; 
@@ -36,15 +35,7 @@ public class TrabajadorEntity extends UserEntity implements Serializable {
     @ManyToMany(mappedBy="trabajadores",fetch = FetchType.EAGER, cascade=ALL)
     private List<ZonaEntity> zonas;
 
-    public Long getSalario() {
-        return salario;
-    }
 
-    public void setSalario(Long salario) {
-        this.salario = salario;
-    }
-
-    @XmlTransient
     public List<ContratoEntity> getContratos() {
         return contratos;
     }
@@ -70,7 +61,6 @@ public class TrabajadorEntity extends UserEntity implements Serializable {
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 59 * hash + Objects.hashCode(this.salario);
         hash = 59 * hash + Objects.hashCode(this.contratos);
         hash = 59 * hash + Objects.hashCode(this.zonas);
         return hash;
@@ -88,9 +78,7 @@ public class TrabajadorEntity extends UserEntity implements Serializable {
             return false;
         }
         final TrabajadorEntity other = (TrabajadorEntity) obj;
-        if (!Objects.equals(this.salario, other.salario)) {
-            return false;
-        }
+        
         if (!Objects.equals(this.contratos, other.contratos)) {
             return false;
         }
@@ -102,7 +90,7 @@ public class TrabajadorEntity extends UserEntity implements Serializable {
 
     @Override
     public String toString() {
-        return "TrabajadorEntity{" + "salario=" + salario + ", contratos=" + contratos + ", zonas=" + zonas + '}';
+        return "TrabajadorEntity{" + "contratos=" + contratos + ", zonas=" + zonas + '}';
     }
     
     

@@ -40,6 +40,16 @@ public class ContratoEntity implements Serializable {
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date fechaContratacion;
     
+    private Long salario;
+
+    public Long getSalario() {
+        return salario;
+    }
+
+    public void setSalario(Long salario) {
+        this.salario = salario;
+    }
+    
     public ContratoEntity(){
         
     }
@@ -83,6 +93,7 @@ public class ContratoEntity implements Serializable {
         hash = 67 * hash + Objects.hashCode(this.trabajador);
         hash = 67 * hash + Objects.hashCode(this.granja);
         hash = 67 * hash + Objects.hashCode(this.fechaContratacion);
+        hash = 67 * hash + Objects.hashCode(this.salario);
         return hash;
     }
 
@@ -110,13 +121,18 @@ public class ContratoEntity implements Serializable {
         if (!Objects.equals(this.fechaContratacion, other.fechaContratacion)) {
             return false;
         }
+        if (!Objects.equals(this.salario, other.salario)) {
+            return false;
+        }
         return true;
     }
 
     @Override
     public String toString() {
-        return "ContratoEntity{" + "idContrato=" + idContrato + ", trabajador=" + trabajador + ", granja=" + granja + ", fechaContratacion=" + fechaContratacion + '}';
+        return "ContratoEntity{" + "idContrato=" + idContrato + ", trabajador=" + trabajador + ", granja=" + granja + ", fechaContratacion=" + fechaContratacion + ", salario=" + salario + '}';
     }
+
+   
 
     
     

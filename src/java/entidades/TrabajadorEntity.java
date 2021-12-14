@@ -9,15 +9,13 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 import static javax.persistence.CascadeType.ALL;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -25,6 +23,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name="trabajador",schema="G2Lauserri")
+@XmlRootElement
 public class TrabajadorEntity extends UserEntity implements Serializable {
 
     private static final Long serialVersionUID = 1L;
@@ -33,10 +32,10 @@ public class TrabajadorEntity extends UserEntity implements Serializable {
     @OneToMany(cascade=ALL, mappedBy="trabajador")
     private List<ContratoEntity> contratos; 
     
-    @ManyToMany(mappedBy="trabajadores",fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy="trabajadores",fetch = FetchType.EAGER, cascade=ALL)
     private List<ZonaEntity> zonas;
 
-  
+
     public List<ContratoEntity> getContratos() {
         return contratos;
     }
@@ -45,6 +44,7 @@ public class TrabajadorEntity extends UserEntity implements Serializable {
         this.contratos = contratos;
     }
 
+    @XmlTransient
     public List<ZonaEntity> getZonas() {
         return zonas;
     }

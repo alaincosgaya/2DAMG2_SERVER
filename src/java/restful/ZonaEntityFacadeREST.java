@@ -5,14 +5,18 @@
  */
 package restful;
 
+import java.util.logging.Logger;
+import entidades.TipoAnimal;
 import entidades.ZonaEntity;
 import java.util.List;
+import java.util.logging.Level;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -27,7 +31,7 @@ import javax.ws.rs.core.MediaType;
 @Stateless
 @Path("entidades.zonaentity")
 public class ZonaEntityFacadeREST extends AbstractFacade<ZonaEntity> {
-
+    Logger logger = Logger.getLogger(ZonaEntityFacadeREST.class.getName());
     @PersistenceContext(unitName = "LauserriServidorPU")
     private EntityManager em;
 
@@ -84,9 +88,9 @@ public class ZonaEntityFacadeREST extends AbstractFacade<ZonaEntity> {
     }
 
     @GET
-    @Path("zona/{nombreZona}")
+    @Path("zonaNombre/{nombreZona}")
     @Produces({MediaType.APPLICATION_XML})
-    public List<ZonaEntity> zonasPorNombre(@PathParam("nombreZona") String nombreZona) /*throws el error*/ {
+    public List<ZonaEntity> zonasPorNombre(@PathParam("nombreZona") String nombreZona) {
 
         List<ZonaEntity> zonas = null;
         try {
@@ -98,29 +102,45 @@ public class ZonaEntityFacadeREST extends AbstractFacade<ZonaEntity> {
     }
 
     @GET
-    @Path("zona/{tipoAnimal}")
+    @Path("zonaTipo/{tipo}")
     @Produces({MediaType.APPLICATION_XML})
-    public List<ZonaEntity> zonasPorAnimal(@PathParam("tipoAnimal") String tipoAnimal) /*throws el error*/ {
-
-        List<ZonaEntity> zonas = null;
-        try {
-            zonas = em.createNamedQuery("zonasPorAnimal").setParameter("tipoAnimal", tipoAnimal).getResultList();
-        } catch (Exception e) {
-
-        }
+    public List<ZonaEntity> zonasPorAnimal(@PathParam("tipo") TipoAnimal tipo) throws NotFoundException{
+        List<ZonaEntity> zonas;
+        
+            logger.info("El try");
+        zonas = em.createNamedQuery("zonasPorAnimal").setParameter("tipo", tipo).getResultList();
+        
         return zonas;
     }
 
     @GET
-    @Path("zona/{username}")
+    @Path("zonaUsername/{username}")
     @Produces({MediaType.APPLICATION_XML})
-    public List<ZonaEntity> zonasPorTrabajador(@PathParam("username") String username) /*throws el error*/ {
+    public List<ZonaEntity> zonasPorTrabajador(@PathParam("username") String username) throws NotFoundException{
 
         List<ZonaEntity> zonas = null;
         try {
+            logger.info("El try");
             zonas = em.createNamedQuery("zonasPorTrabajador").setParameter("username", username).getResultList();
-        } catch (Exception e) {
+        } catch(Exception e){
+            logger.severe("ERROR");
+            throw new NotFoundException(e);
+        }
+        return zonas;
+    }
+    
+    @GET
+    @Path("zonaidGranja/{idGranja}")
+    @Produces({MediaType.APPLICATION_XML})
+    public List<ZonaEntity> zonasPorGranja(@PathParam("idGranja") long idGranja) throws NotFoundException{
 
+        List<ZonaEntity> zonas = null;
+        try {
+            logger.info("El try");
+            zonas = em.createNamedQuery("zonasPorGranja").setParameter("idGranja", idGranja).getResultList();
+        } catch(Exception e){
+            logger.severe("ERROR");
+            throw new NotFoundException(e);
         }
         return zonas;
     }

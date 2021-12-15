@@ -32,11 +32,15 @@ import javax.xml.bind.annotation.XmlTransient;
 ),
 @NamedQuery(
 		name="zonasPorAnimal", 
-		query="SELECT z.animales.TipoAnimal.tipo FROM ZonaEntity z WHERE z.animales.TipoAnimal.tipo=:tipoAnimal"
+		query="SELECT z FROM ZonaEntity z WHERE z.idZona in " + "(SELECT a.zona.idZona FROM AnimalEntity a WHERE a.tipo=:tipo)"
 ),
 @NamedQuery(
 		name="zonasPorTrabajador", 
-		query="SELECT z.trabajadores.username FROM ZonaEntity z WHERE z.trabajadores.username=:username"
+		query="SELECT z FROM ZonaEntity z WHERE z.idZona in" + "(SELECT t FROM TrabajadorEntity t WHERE t.username=:username)"
+),
+@NamedQuery(
+		name="zonasPorGranja", 
+		query="SELECT z FROM ZonaEntity z WHERE z.idZona in" + "(SELECT g FROM GranjaEntity g WHERE g.idGranja=:idGranja)"
 )
 })
 @Entity

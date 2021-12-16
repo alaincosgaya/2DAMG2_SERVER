@@ -12,6 +12,8 @@ import static javax.persistence.CascadeType.ALL;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -21,6 +23,32 @@ import javax.xml.bind.annotation.XmlTransient;
  *
  * @author Alain Cosgaya
  */
+@NamedQueries({
+    @NamedQuery(
+            name="trabajadoresParaContratar", query="SELECT t FROM TrabajadorEntity t WHERE t.id not in "
+            + "(SELECT c.trabajador.id FROM ContratoEntity c WHERE c.idContrato.granjaId=:granjaId)"
+    ),
+    @NamedQuery(
+            name="trabajadoresGranja", query="SELECT t FROM TrabajadorEntity t WHERE t.id in "
+            + "(SELECT c.trabajador.id FROM ContratoEntity c WHERE c.idContrato.granjaId=:granjaId)"
+    ),
+    @NamedQuery(
+            name="trabajadoresZona", query="SELECT t FROM TrabajadorEntity t WHERE t.id in "
+            + "(SELECT t2 FROM ZonaEntity z JOIN z.trabajadores t2 WHERE z.idZona=:zonaId)"
+    ),
+    @NamedQuery(
+            name="despedirTrabajador", query="DELETE FROM ContratoEntity c "
+                    + "WHERE c.idContrato.trabajadorId=:idTrabajador AND c.idContrato.granjaId=:idGranja"
+    ),
+    
+    @NamedQuery(
+            name="trabajadorDatosGranja", query="SELECT c FROM ContratoEntity c "
+                    + "WHERE c.idContrato.trabajadorId=:idTrabajador AND c.idContrato.granjaId=:idGranja "
+    )
+    
+        
+      
+})
 @Entity
 @Table(name="trabajador",schema="G2Lauserri")
 @XmlRootElement
@@ -44,7 +72,7 @@ public class TrabajadorEntity extends UserEntity implements Serializable {
         this.contratos = contratos;
     }
 
-    @XmlTransient
+    
     public List<ZonaEntity> getZonas() {
         return zonas;
     }

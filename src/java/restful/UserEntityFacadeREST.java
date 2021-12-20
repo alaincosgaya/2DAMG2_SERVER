@@ -6,7 +6,9 @@
 package restful;
 
 import entidades.UserEntity;
+import entidades.UserPrivilegeType;
 import java.util.List;
+import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -27,62 +29,105 @@ import javax.ws.rs.core.MediaType;
 @Stateless
 @Path("entidades.userentity")
 public class UserEntityFacadeREST extends AbstractFacade<UserEntity> {
-
+    
     @PersistenceContext(unitName = "LauserriServidorPU")
     private EntityManager em;
+    
+    private final Logger LOGGER = Logger.getLogger(UserEntityFacadeREST.class.getName());
 
     public UserEntityFacadeREST() {
         super(UserEntity.class);
     }
-
+    
     @POST
     @Override
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Consumes({MediaType.APPLICATION_XML})
     public void create(UserEntity entity) {
         super.create(entity);
     }
-
+    
     @PUT
     @Path("{id}")
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Consumes({MediaType.APPLICATION_XML})
     public void edit(@PathParam("id") Long id, UserEntity entity) {
         super.edit(entity);
     }
-
+    
     @DELETE
     @Path("{id}")
     public void remove(@PathParam("id") Long id) {
         super.remove(super.find(id));
     }
-
+    
     @GET
     @Path("{id}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML})
     public UserEntity find(@PathParam("id") Long id) {
         return super.find(id);
     }
-
+    
     @GET
     @Override
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML})
     public List<UserEntity> findAll() {
         return super.findAll();
     }
-
+    
     @GET
     @Path("{from}/{to}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML})
     public List<UserEntity> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
         return super.findRange(new int[]{from, to});
     }
-
+    
     @GET
     @Path("count")
     @Produces(MediaType.TEXT_PLAIN)
     public String countREST() {
         return String.valueOf(super.count());
     }
+    
+    @GET
+    @Path("validarLogin/{username}/{password}")
+    @Produces({MediaType.APPLICATION_XML})
+    public List<UserEntity> validarLogin(@PathParam("username") String username, @PathParam("password") String password) {
+        List<UserEntity> users = null;
+        try {
+            users = em.createNamedQuery("validarLogin").setParameter("username", username).setParameter("password", password).getResultList();
+            
+        } catch (Exception e) {
+            
+        }
+        return users;
+    }
 
+    @GET
+    @Path("registro")    
+    @Produces({MediaType.APPLICATION_XML})
+    public List<UserEntity> registro(UserEntity userEntity) {
+        userEntity = new UserEntity();
+        List<UserEntity> users = null;
+        userEntity.setUserPrivilege(UserPrivilegeType.GRANJERO);
+        System.out.println(userEntity.getUserPrivilege());
+        userEntity.setEmail("p@gmail.com");
+        userEntity.setUsername("p1");
+        try {
+            users = em.createNamedQuery("validarRegistro").setParameter("username", userEntity.getUsername()).setParameter("email", userEntity.getEmail()).getResultList();
+            if (users.isEmpty()) {
+                em.merge(userEntity);
+                LOGGER.info("El usuario ha sido registrado correctamente");
+            }
+             
+            /*if(!em.contains(userEntity)){
+                em.merge(userEntity);   
+            }
+            em.flush();*/
+        } catch (Exception e) {
+            
+        }
+        return users;
+    }
+    
     @Override
     protected EntityManager getEntityManager() {
         return em;

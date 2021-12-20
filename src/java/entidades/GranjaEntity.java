@@ -15,17 +15,43 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
  * @author Alejandro Gómez
  */
+@NamedQueries({
+    @NamedQuery(
+            name = "granjasPorLoginDelGranjero", query = "SELECT g FROM GranjaEntity g WHERE g.granjero.id in "
+            + "(SELECT gr.id FROM GranjeroEntity gr WHERE gr.username=:username)"
+    ),
+    @NamedQuery(
+            name = "granjaPorNombre", query = "SELECT g FROM GranjaEntity g WHERE g.nombreGranja=:nombreGranja"
+    ),
+    @NamedQuery(
+            name = "GranjaALaQuePerteneceEsazona", query = "SELECT g FROM GranjaEntity g WHERE g.idGranja in "
+            + "(SELECT z.granja.idGranja FROM ZonaEntity z WHERE z.nombreZona=:nombreZona)"
+    ),
+    @NamedQuery(
+            name = "GranjasEnLasQueTrabajaEseTrabajador", query = "SELECT g FROM GranjaEntity g WHERE g.idGranja in "
+            + "(SELECT c.granja.idGranja FROM ContratoEntity c WHERE c.trabajador.id in "
+            + "(SELECT t.id FROM TrabajadorEntity t WHERE t.username=:username))"
+    ),  
+
+})
+
 @Entity
-@Table(name ="granja", schema ="G2Lauserri")
-public class GranjaEntity implements Serializable{
+@Table(name = "granja", schema = "G2Lauserri")
+@XmlRootElement
+public class GranjaEntity implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long idGranja;
@@ -34,9 +60,9 @@ public class GranjaEntity implements Serializable{
     private Date fechaCreacion;
     @ManyToOne
     private GranjeroEntity granjero;
-    @OneToMany(cascade=ALL, mappedBy="zona")
+    @OneToMany(cascade = ALL, mappedBy = "granja")
     private List<ZonaEntity> zonas;
-    @OneToMany(cascade=ALL, mappedBy="granja")
+    @OneToMany(cascade = ALL, mappedBy = "granja")
     private List<ContratoEntity> contratos;
 
     public GranjaEntity() {
@@ -50,94 +76,101 @@ public class GranjaEntity implements Serializable{
         this.zonas = zonas;
         this.contratos = contratos;
     }
+
     /**
-     * 
+     *
      * @return idGranja
      */
     public Long getIdGranja() {
         return idGranja;
     }
+
     /**
-     * 
-     * @param idGranja 
+     *
+     * @param idGranja
      */
     public void setIdGranja(Long idGranja) {
         this.idGranja = idGranja;
     }
+
     /**
-     * 
+     *
      * @return nombreGranja
      */
     public String getNombreGranja() {
         return nombreGranja;
     }
-    
+
     /**
-     * 
-     * @param nombreGranja 
+     *
+     * @param nombreGranja
      */
     public void setNombreGranja(String nombreGranja) {
         this.nombreGranja = nombreGranja;
     }
-    
+
     /**
-     * 
+     *
      * @return fechaCreacion
      */
     public Date getFechaCreacion() {
         return fechaCreacion;
     }
-    
+
     /**
-     * 
-     * @param fechaCreacion 
+     *
+     * @param fechaCreacion
      */
     public void setFechaCreacion(Date fechaCreacion) {
         this.fechaCreacion = fechaCreacion;
     }
-    
+
     /**
-     * 
+     *
      * @return granjero
      */
+    @XmlTransient
     public GranjeroEntity getGranjero() {
         return granjero;
     }
-    
+
     /**
-     * 
-     * @param granjero 
+     *
+     * @param granjero
      */
     public void setGranjero(GranjeroEntity granjero) {
         this.granjero = granjero;
     }
-    
+
     /**
-     * 
+     *
      * @return zonas
      */
+    @XmlTransient
     public List<ZonaEntity> getZonas() {
         return zonas;
     }
-    
+
     /**
-     * 
-     * @param zonas 
+     *
+     * @param zonas
      */
     public void setZonas(List<ZonaEntity> zonas) {
         this.zonas = zonas;
     }
+
     /**
-     * 
+     *
      * @return contratos
      */
+    @XmlTransient
     public List<ContratoEntity> getContratos() {
         return contratos;
     }
-    
+
     /**
-     * 
-     * @param contratos 
+     *
+     * @param contratos
      */
     public void setContratos(List<ContratoEntity> contratos) {
         this.contratos = contratos;
@@ -192,6 +225,5 @@ public class GranjaEntity implements Serializable{
     public String toString() {
         return "Granja{" + "idGranja=" + idGranja + ", nombreGranja=" + nombreGranja + ", fechaCreacion=" + fechaCreacion + ", granjero=" + granjero + ", zonas=" + zonas + ", contratos=" + contratos + '}';
     }
-    
-    
+
 }

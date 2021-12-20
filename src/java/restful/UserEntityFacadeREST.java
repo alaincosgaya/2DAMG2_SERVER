@@ -128,6 +128,33 @@ public class UserEntityFacadeREST extends AbstractFacade<UserEntity> {
         return users;
     }
     
+    @GET
+    @Path("reset/{username}")
+    public void resetContra(@PathParam (username) String username) {
+	
+	List<UserEntity> users = usuarioPorLogin(username);
+	if(!usuarioPorLogin==null){
+        	Asimetrico as = new Asimetrico();
+		String contra = as.generarContra();
+		users.setPassword(contra);
+		em.merge(users);
+	}
+    }
+
+    @GET
+    @Path("usuarioPorLogin/{username}")
+    @Produces({MediaType.APPLICATION_XML})
+    public List<UserEntity> usuarioPorLogin(@PathParam("username") String username) {
+        List<UserEntity> users = null;
+        try {
+            users = em.createNamedQuery("usuarioPorLogin").setParameter("username", username).getResultList();
+            
+        } catch (Exception e) {
+            
+        }
+        return users;
+    }
+    
     @Override
     protected EntityManager getEntityManager() {
         return em;

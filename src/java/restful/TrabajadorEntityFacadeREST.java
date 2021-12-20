@@ -5,8 +5,12 @@
  */
 package restful;
 
+import entidades.ContratoEntity;
 import entidades.TrabajadorEntity;
+import entidades.ZonaEntity;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -22,7 +26,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-
 /**
  *
  * @author 2dam
@@ -34,6 +37,7 @@ public class TrabajadorEntityFacadeREST extends AbstractFacade<TrabajadorEntity>
     @PersistenceContext(unitName = "LauserriServidorPU")
     private EntityManager em;
     private final Logger LOGGER = Logger.getLogger(TrabajadorEntityFacadeREST.class.getName());
+
     public TrabajadorEntityFacadeREST() {
         super(TrabajadorEntity.class);
     }
@@ -43,6 +47,7 @@ public class TrabajadorEntityFacadeREST extends AbstractFacade<TrabajadorEntity>
     @Consumes({MediaType.APPLICATION_XML})
     public void create(TrabajadorEntity entity) {
         super.create(entity);
+
     }
 
     @PUT
@@ -85,13 +90,13 @@ public class TrabajadorEntityFacadeREST extends AbstractFacade<TrabajadorEntity>
     public String countREST() {
         return String.valueOf(super.count());
     }
-    
+
     @GET
     @Path("contratables/{idGranja}")
     @Produces({MediaType.APPLICATION_XML})
-    public List<TrabajadorEntity> 
-        trabajadoresParaContratar(@PathParam("idGranja") Long idGranja) 
-       throws NotFoundException{
+    public List<TrabajadorEntity>
+            trabajadoresParaContratar(@PathParam("idGranja") Long idGranja)
+            throws NotFoundException {
         List<TrabajadorEntity> trabajadores = null;
         try {
             LOGGER.info("Recogiendo listado de trabajadores por contratar");
@@ -99,18 +104,17 @@ public class TrabajadorEntityFacadeREST extends AbstractFacade<TrabajadorEntity>
                     .setParameter("granjaId", idGranja).getResultList();
         } catch (Exception e) {
             LOGGER.severe("Error listando trabajadores por contratar. "
-                    +e.getLocalizedMessage());
+                    + e.getLocalizedMessage());
             throw new NotFoundException(e);
         }
         return trabajadores;
     }
-        
+
     @GET
     @Path("contratados/{idGranja}")
     @Produces({MediaType.APPLICATION_XML})
-    public List<TrabajadorEntity> 
-        trabajadoresGranja(@PathParam("idGranja") Long idGranja) 
-       {
+    public List<TrabajadorEntity>
+            trabajadoresGranja(@PathParam("idGranja") Long idGranja) {
         List<TrabajadorEntity> trabajadores = null;
         try {
             LOGGER.info("Recogiendo listado de trabajadores contratados");
@@ -118,19 +122,17 @@ public class TrabajadorEntityFacadeREST extends AbstractFacade<TrabajadorEntity>
                     .setParameter("granjaId", idGranja).getResultList();
         } catch (Exception e) {
             LOGGER.severe("Error listando trabajadores contratados. "
-                    +e.getLocalizedMessage());
-            
-            
+                    + e.getLocalizedMessage());
+
         }
         return trabajadores;
     }
-        
+
     @GET
     @Path("zonas/{idZona}")
     @Produces({MediaType.APPLICATION_XML})
-    public List<TrabajadorEntity> 
-        trabajadoresZona(@PathParam("idZona") Long idZona) 
-       {
+    public List<TrabajadorEntity>
+            trabajadoresZona(@PathParam("idZona") Long idZona) {
         List<TrabajadorEntity> trabajadores = null;
         try {
             LOGGER.info("Recogiendo listado de trabajadores de la zona");
@@ -138,26 +140,57 @@ public class TrabajadorEntityFacadeREST extends AbstractFacade<TrabajadorEntity>
                     .setParameter("zonaId", idZona).getResultList();
         } catch (Exception e) {
             LOGGER.severe("Error listando trabajadores de la zona. "
-                    +e.getLocalizedMessage());
-            
+                    + e.getLocalizedMessage());
+
         }
         return trabajadores;
     }
+
     @DELETE
     @Path("despedir/{idTrabajador}/{idGranja}")
-    public void despedirTrabajador(@PathParam("idTrabajador") Long idTrabajador, @PathParam("idGranja") Long idGranja){
-        try{
+    public void despedirTrabajador(@PathParam("idTrabajador") Long idTrabajador, @PathParam("idGranja") Long idGranja) {
+        try {
             em.createNamedQuery("despedirTrabajador").setParameter("idTrabajador", idTrabajador)
                     .setParameter("idGranja", idGranja).executeUpdate();
-        }catch(Exception e){
-            
+          
+        } catch (Exception e) {
+
         }
-        
+
     }
+
+    public void borrarZonas(Long idTrabajador, Long idGranja) {
+        TrabajadorEntity trabajadorEntity = find(idTrabajador);
+        List<ZonaEntity> zonas = new ArrayList<>();
+
+        for (ZonaEntity zona : trabajadorEntity.getZonas()) {
+            if (!Objects.equals(zona.getGranja().getIdGranja(), idGranja)) {
+                zonas.add(zona);
+            }
+        }
+        trabajadorEntity.setZonas(zonas);
+        em.getTransaction().begin();
+        
+        em.merge(trabajadorEntity);
+        em.getTransaction().commit();
+    }
+   
     
+    
+    /*
+    @GET
+    @Path("cambiarSueldo")
+    @Produces({MediaType.APPLICATION_XML})    
+    public void cambiarSueldo(TrabajadorEntity trabajadorEntity) {
+        trabajadorEntity = find(1);
+        trabajadorEntity.getContratos().get(0).setSalario(Long.valueOf("10"));
+        edit(trabajadorEntity.getId(), trabajadorEntity);
+
+    }*/
+
     @Override
     protected EntityManager getEntityManager() {
         return em;
     }
-    
+
 }

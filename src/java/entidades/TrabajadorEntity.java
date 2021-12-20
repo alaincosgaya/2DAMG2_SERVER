@@ -39,15 +39,10 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(
             name="despedirTrabajador", query="DELETE FROM ContratoEntity c "
                     + "WHERE c.idContrato.trabajadorId=:idTrabajador AND c.idContrato.granjaId=:idGranja"
-    ),
-    
-    @NamedQuery(
-            name="trabajadorDatosGranja", query="SELECT c FROM ContratoEntity c "
-                    + "WHERE c.idContrato.trabajadorId=:idTrabajador AND c.idContrato.granjaId=:idGranja "
     )
-    
         
-      
+    
+           
 })
 @Entity
 @Table(name="trabajador",schema="G2Lauserri")
@@ -72,7 +67,7 @@ public class TrabajadorEntity extends UserEntity implements Serializable {
         this.contratos = contratos;
     }
 
-    
+    @XmlTransient
     public List<ZonaEntity> getZonas() {
         return zonas;
     }

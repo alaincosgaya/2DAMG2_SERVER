@@ -25,6 +25,25 @@ import javax.xml.bind.annotation.XmlTransient;
  *
  * @author Alejandro Gómez
  */
+@NamedQueries({
+    @NamedQuery(
+            name = "granjasPorLoginDelGranjero", query = "SELECT g FROM GranjaEntity g WHERE g.granjero.id in "
+            + "(SELECT gr.id FROM GranjeroEntity gr WHERE gr.username=:username)"
+    ),
+    @NamedQuery(
+            name = "granjaPorNombre", query = "SELECT g FROM GranjaEntity g WHERE g.nombreGranja=:nombreGranja"
+    ),
+    @NamedQuery(
+            name = "GranjaALaQuePerteneceEsazona", query = "SELECT g FROM GranjaEntity g WHERE g.idGranja in "
+            + "(SELECT z.granja.idGranja FROM ZonaEntity z WHERE z.nombreZona=:nombreZona)"
+    ),
+    @NamedQuery(
+            name = "GranjasEnLasQueTrabajaEseTrabajador", query = "SELECT g FROM GranjaEntity g WHERE g.idGranja in "
+            + "(SELECT c.granja.idGranja FROM ContratoEntity c WHERE c.trabajador.id in "
+            + "(SELECT t.id FROM TrabajadorEntity t WHERE t.username=:username))"
+    ),  
+
+})
 @Entity
 @Table(name ="granja", schema ="G2Lauserri")
 @XmlRootElement

@@ -22,7 +22,7 @@ import javax.ws.rs.core.MediaType;
 
 /**
  *
- * @author 2dam
+ * @author Alejandro Gómez
  */
 @Stateless
 @Path("entidades.granjaentity")
@@ -81,6 +81,63 @@ public class GranjaEntityFacadeREST extends AbstractFacade<GranjaEntity> {
     @Produces(MediaType.TEXT_PLAIN)
     public String countREST() {
         return String.valueOf(super.count());
+    }
+
+    @GET
+    @Path("granjasGranjero/{username}")
+    @Produces({MediaType.APPLICATION_XML})
+    public List<GranjaEntity> granjasPorLoginDelGranjero(@PathParam("username") String username) {
+        List<GranjaEntity> granjas = null;
+        try {
+            LOGGER.info("Listado de las granjas del granjero");
+            granjas = em.createNamedQuery("granjasPorLoginDelGranjero").setParameter("username", username).getResultList();
+        } catch (Exception e) {
+            LOGGER.severe("No hay granjas corrrespondientes a ese granjero " +e.getLocalizedMessage());
+        }
+        return granjas;
+    }
+    
+
+    @GET
+    @Path("nombreGranja/{nombreGranja}")
+    @Produces({MediaType.APPLICATION_XML})
+    public GranjaEntity granjaPorNombre(@PathParam("nombreGranja") String nombreGranja) {
+        GranjaEntity granja = null;
+        try {
+            LOGGER.info("Listado de la granja con ese nombre");
+            granja = (GranjaEntity) em.createNamedQuery("granjaPorNombre").setParameter("nombreGranja", nombreGranja).getSingleResult();
+        } catch (Exception e) {
+            LOGGER.severe("No hay ninguna granja existente con ese nombre " +e.getLocalizedMessage());
+        }
+        return granja;
+    }
+
+    @GET
+    @Path("GranjaPerteneceZona/{nombreZona}")
+    @Produces({MediaType.APPLICATION_XML})
+    public GranjaEntity GranjaALaQuePerteneceEsazona(@PathParam("nombreZona") String nombreZona) {
+       GranjaEntity granja = null;
+        try {
+            LOGGER.info("Listado de la granja a la que pertenece esa zona");
+            granja =  (GranjaEntity) em.createNamedQuery("GranjaALaQuePerteneceEsazona").setParameter("nombreZona", nombreZona).getSingleResult();
+        } catch (Exception e) {
+            LOGGER.severe("No hay ninguna zona asociada a esa granja " +e.getLocalizedMessage());
+        }
+        return granja;
+    }
+
+    @GET
+    @Path("granjasTrabajador/{username}")
+    @Produces({MediaType.APPLICATION_XML})
+    public List<GranjaEntity> GranjasEnLasQueTrabajaEseTrabajador(@PathParam("username") String username) {
+        List<GranjaEntity> granjas = null;
+        try {
+            LOGGER.info("Listado de las granjas donde trabaja ese trabajador");
+            granjas = em.createNamedQuery("GranjasEnLasQueTrabajaEseTrabajador").setParameter("username", username).getResultList();
+        } catch (Exception e) {
+            LOGGER.severe("No hay ningun trabajador que trabaje en esa granja " +e.getLocalizedMessage());
+        }
+        return granjas;
     }
 
     @Override

@@ -10,5 +10,5 @@ package entidades;
  * @author Jonathan Camacho
  */
 public enum EstadoAnimal {
-    SANO,MUUERTO,ENFERMO,EMBARAZADO,VENDIDO
+    SANO,MUERTO,ENFERMO,EMBARAZADO,VENDIDO
 }

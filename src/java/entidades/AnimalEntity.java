@@ -21,18 +21,27 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Jonathan Camacho
  */
 @NamedQueries({
-	@NamedQuery(
-		name="animalesPorNombre",query="SELECT a FROM AnimalEntity a WHERE a.nombreAnimal=:nombreAnimal"
-	),
-	@NamedQuery(
-		name="animalesPorTipo",query="SELECT a FROM AnimalEntity a WHERE a.tipo=:tipo"
-	),
-	@NamedQuery(
-		name="animalesPorSexo",query="SELECT a FROM AnimalEntity a WHERE a.sexo=:sexo"
-	),
-	@NamedQuery(
-		name="animalesPorEstado",query="SELECT a FROM AnimalEntity a WHERE a.estado=:estado"
-	)
+    @NamedQuery(
+            name = "animalesPorNombre", query = "SELECT a FROM AnimalEntity a WHERE a.nombreAnimal=:nombreAnimal"
+    )
+    ,
+    @NamedQuery(
+            name = "animalesPorTipo", query = "SELECT a FROM AnimalEntity a WHERE a.tipo=:tipo"
+    )
+    ,
+    @NamedQuery(
+            name = "animalesPorSexo", query = "SELECT a FROM AnimalEntity a WHERE a.sexo=:sexo"
+    )
+    ,
+    @NamedQuery(
+            name = "animalesPorEstado", query = "SELECT a FROM AnimalEntity a WHERE a.estado=:estado"
+    ), 
+    @NamedQuery(
+            name="eliminarAnimal", query="DELETE FROM AnimalEntity a WHERE a.estado=:MUERTO"
+    ),
+    @NamedQuery(
+            name="cambiarEstadoAnimal", query="SELECT a FROM AnimalEntity a  WHERE a.idAnimal=:idAnimal"
+    )
 })
 @Entity
 @Table(name = "animal", schema = "G2Lauserri")

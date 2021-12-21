@@ -50,6 +50,7 @@ import javax.xml.bind.annotation.XmlTransient;
 		name="quitarTrabajadorZona", 
 		query="SELECT z FROM ZonaEntity z WHERE z.idZona=:idZona AND z.idZona in" +"(SELECT t FROM TrabajadorEntity t WHERE t.username=:username)"
 )
+
 })
 @Entity
 @Table(name="zona", schema = "G2Lauserri")

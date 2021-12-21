@@ -35,11 +35,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(
             name="trabajadoresZona", query="SELECT t FROM TrabajadorEntity t WHERE t.id in "
             + "(SELECT t2 FROM ZonaEntity z JOIN z.trabajadores t2 WHERE z.idZona=:zonaId)"
-    ),
-    @NamedQuery(
-            name="despedirTrabajador", query="DELETE FROM ContratoEntity c "
-                    + "WHERE c.idContrato.trabajadorId=:idTrabajador AND c.idContrato.granjaId=:idGranja"
     )
+   
         
     
            

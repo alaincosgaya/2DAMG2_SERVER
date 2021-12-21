@@ -146,47 +146,6 @@ public class TrabajadorEntityFacadeREST extends AbstractFacade<TrabajadorEntity>
         return trabajadores;
     }
 
-    @DELETE
-    @Path("despedir/{idTrabajador}/{idGranja}")
-    public void despedirTrabajador(@PathParam("idTrabajador") Long idTrabajador, @PathParam("idGranja") Long idGranja) {
-        try {
-            em.createNamedQuery("despedirTrabajador").setParameter("idTrabajador", idTrabajador)
-                    .setParameter("idGranja", idGranja).executeUpdate();
-          
-        } catch (Exception e) {
-
-        }
-
-    }
-
-    public void borrarZonas(Long idTrabajador, Long idGranja) {
-        TrabajadorEntity trabajadorEntity = find(idTrabajador);
-        List<ZonaEntity> zonas = new ArrayList<>();
-
-        for (ZonaEntity zona : trabajadorEntity.getZonas()) {
-            if (!Objects.equals(zona.getGranja().getIdGranja(), idGranja)) {
-                zonas.add(zona);
-            }
-        }
-        trabajadorEntity.setZonas(zonas);
-        em.getTransaction().begin();
-        
-        em.merge(trabajadorEntity);
-        em.getTransaction().commit();
-    }
-   
-    
-    
-    /*
-    @GET
-    @Path("cambiarSueldo")
-    @Produces({MediaType.APPLICATION_XML})    
-    public void cambiarSueldo(TrabajadorEntity trabajadorEntity) {
-        trabajadorEntity = find(1);
-        trabajadorEntity.getContratos().get(0).setSalario(Long.valueOf("10"));
-        edit(trabajadorEntity.getId(), trabajadorEntity);
-
-    }*/
 
     @Override
     protected EntityManager getEntityManager() {

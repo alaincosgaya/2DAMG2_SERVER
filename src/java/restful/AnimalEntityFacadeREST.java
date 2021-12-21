@@ -27,11 +27,12 @@ import javax.ws.rs.core.MediaType;
 
 /**
  *
- * @author 2dam
+ * @author Jonathan Camacho
  */
 @Stateless
 @Path("entidades.animalentity")
 public class AnimalEntityFacadeREST extends AbstractFacade<AnimalEntity> {
+
     private static final Logger logger = Logger.getLogger(AnimalEntityFacadeREST.class.getName());
 
     @PersistenceContext(unitName = "LauserriServidorPU")
@@ -89,7 +90,6 @@ public class AnimalEntityFacadeREST extends AbstractFacade<AnimalEntity> {
         return String.valueOf(super.count());
     }
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     @GET
     @Path("nombreAnimal/{nombreAnimal}")
     @Produces({MediaType.APPLICATION_XML})
@@ -158,59 +158,28 @@ public class AnimalEntityFacadeREST extends AbstractFacade<AnimalEntity> {
     @GET
     @Path("cambiarEstadoAnimal/{idAnimal}/{estado}")
     @Produces({MediaType.APPLICATION_XML})
-    public void cambiarEstadoAnimal(@PathParam("idAnimal") Long idAnimal,@PathParam("estado") EstadoAnimal estado){
+    public void cambiarEstadoAnimal(@PathParam("idAnimal") Long idAnimal, @PathParam("estado") EstadoAnimal estado) {
         List<AnimalEntity> animales = null;
-        try{
-           animales = em.createNamedQuery("cambiarEstadoAnimal").setParameter("idAnimal", idAnimal).getResultList();
-           animales.get(0).setEstado(estado);
-           em.merge(animales.get(0));
-           em.flush();
-        }catch(Exception e){
+        boolean muerto = false;
+        try {
+            animales = em.createNamedQuery("cambiarEstadoAnimal").setParameter("idAnimal", idAnimal).getResultList();
+            animales.get(0).setEstado(estado);
+            //en cado de que el animal este muerto, lo borramos directamente de la base de datos
+            for (AnimalEntity animal : animales) {
+                if (animal.getEstado().equals(EstadoAnimal.MUERTO)) {
+                    muerto = true;
+                    break;
+                }
+            }
+            if (muerto) {
+                em.remove(animales.get(0));
+            }
+            em.flush();
+        } catch (Exception e) {
 
-        }   
-    }
-   /* 
-    @GET
-    @Path("eliminarAnimal/{idAnimal}")
-    @Produces({MediaType.APPLICATION_XML})
-    public void eliminarAnimal(@PathParam("idAnimal") Long idAnimal){
-        List<AnimalEntity> animales = null;
-        try{
-           animales = em.createNamedQuery("eliminarAnimal").setParameter("idAnimal", idAnimal).getResultList();
-           animales.remove(0);
-           em.merge(animales.get(0));
-           em.flush();
-        }catch(Exception e){
-
-        }   
-    }
-    */
-    
-    @DELETE
-    @Path("eliminarAnimalSegunEstado/{idAnimal}")
-    public void eliminarAnimal(@PathParam("idAnimal") Long idAnimal){
-
-        //AnimalEntity animalEntity = find(idAnimal);
-        
-        try{
-            //getEntityManager().remove(getEntityManager().merge(entity));
-            
-           em.createNamedQuery("eliminarAnimal").setParameter("idAnimal", idAnimal).executeUpdate();
-                   
-                  // em.remove(animalEntity);
-                   //em.merge(animalEntity);
-           //animales.get(0);
-
-            //em.createNamedQuery("eliminarAnimal").setParameter("idAnimal", idAnimal)
-            //em.remove(getEntityManager().merge(entity));
-        }catch(Exception e){
-            
         }
-        
     }
 
-    
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
     @Override
     protected EntityManager getEntityManager() {
         return em;

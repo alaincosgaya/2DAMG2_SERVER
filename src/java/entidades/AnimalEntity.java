@@ -37,9 +37,6 @@ import javax.xml.bind.annotation.XmlRootElement;
             name = "animalesPorEstado", query = "SELECT a FROM AnimalEntity a WHERE a.estado=:estado"
     ), 
     @NamedQuery(
-            name="eliminarAnimal", query="DELETE FROM AnimalEntity a WHERE a.estado=:MUERTO"
-    ),
-    @NamedQuery(
             name="cambiarEstadoAnimal", query="SELECT a FROM AnimalEntity a  WHERE a.idAnimal=:idAnimal"
     )
 })

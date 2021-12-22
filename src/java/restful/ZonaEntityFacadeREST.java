@@ -70,15 +70,15 @@ public class ZonaEntityFacadeREST extends AbstractFacade<ZonaEntity> {
     @Path("quitarTrabajadorZona/{username}/{idZona}")
     @Produces({MediaType.APPLICATION_XML})
     public void quitarTrabajadorZona(@PathParam("username") String username, @PathParam("idZona") Long idZona) {
-        List<ZonaEntity> zonas = null;
-        zonas = em.createNamedQuery("quitarTrabajadorZona").setParameter("username", username).setParameter("idZona", idZona).getResultList();
-        for (ZonaEntity zona : zonas) {
-            for (TrabajadorEntity trabajador : zona.getTrabajadores()) {
-                if (trabajador.getUsername().equals(username)) {
-                    zona.getTrabajadores().remove(trabajador);
-                    break;
-                }
+        ZonaEntity zona = null;
+        zona = (ZonaEntity) em.createNamedQuery("quitarTrabajadorZona").setParameter("username", username).setParameter("idZona", idZona).getSingleResult();
+
+        for (TrabajadorEntity trabajador : zona.getTrabajadores()) {
+            if (trabajador.getUsername().equals(username)) {
+                zona.getTrabajadores().remove(trabajador);
+                break;
             }
+
             em.merge(zona);
         }
 
@@ -88,19 +88,18 @@ public class ZonaEntityFacadeREST extends AbstractFacade<ZonaEntity> {
     @GET
     @Path("asignarTrabajador/{username}/{idZona}")
     @Produces({MediaType.APPLICATION_XML})
-    public void asignarTrabajador(@PathParam("username") String username, @PathParam("idZona") Long idZona) {
-        List<ZonaEntity> zonas = null;
-        zonas = em.createNamedQuery("quitarTrabajadorZona").setParameter("idZona", idZona).setParameter("username", username).getResultList();
-        for (ZonaEntity zona : zonas) {
-            for (TrabajadorEntity trabajador : zona.getTrabajadores()) {
-                if (!trabajador.getUsername().equals(username)) {
-                    zona.getTrabajadores().add(trabajador);
-                    break;
-                }
-            }
-            em.merge(zona);
-        }
-        
+    public void asignarTrabajador(@PathParam("username") String username, @PathParam("idZona") Long idZona, TrabajadorEntity entity) {
+        //List<ZonaEntity> zonas = null;
+        //zonas = em.createNamedQuery("asignarTrabajador").setParameter("idZona", idZona).setParameter("username", username).getResultList();
+        //for (ZonaEntity zona : zonas) {
+
+        ZonaEntity zona = find(idZona);
+        entity = (TrabajadorEntity) em.createNamedQuery("asignarTrabajador").setParameter("username", username).getSingleResult();
+        zona.getTrabajadores().add(entity);
+
+        em.merge(zona);
+        //}
+
         em.flush();
     }
 

@@ -1,11 +1,12 @@
 package entidades;
 
-
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Objects;
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -23,6 +24,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Entidad de la clase User.
+ *
  * @author Alain Cosgaya
  */
 @NamedQueries({
@@ -34,46 +36,51 @@ import javax.xml.bind.annotation.XmlRootElement;
     ),
     @NamedQuery(name="usuarioPorLogin",query="SELECT u FROM UserEntity u "
             + "WHERE u.username=:username"
+
     )
 })
+
 @Entity
-@Table(name="user",schema="G2Lauserri")
+@DiscriminatorColumn(name = "USER_TYPE", discriminatorType = DiscriminatorType.STRING)
+@Table(name = "user", schema = "G2Lauserri")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @XmlRootElement
-public class UserEntity implements Serializable{
-    
+public class UserEntity implements Serializable {
+
     private static final Long serialVersionUID = 1L;
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @Column(unique=true,name="login")
+    @Column(unique = true, name = "login")
     private String username;
-   
+    @Column(unique = true)
     private String email;
-    
+
     private String fullName;
-    
+
     private String password;
-    
+
     @Enumerated(EnumType.STRING)
     private UserStatusType UserStatus;
-    
+
     @Enumerated(EnumType.STRING)
+    @Column(name="USER_TYPE", insertable = false, updatable = false)
     private UserPrivilegeType UserPrivilege;
+
     @Temporal(TemporalType.TIMESTAMP)   
     private Date lastPasswordChange;
     
     /**
      * Constructor vacio de la entidad User.
      */
-   
     public UserEntity() {
-        
+
     }
 
     /**
      * Recoger id
+     *
      * @return id
      */
     public Long getId() {
@@ -82,6 +89,7 @@ public class UserEntity implements Serializable{
 
     /**
      * set id
+     *
      * @param id
      */
     public void setId(Long id) {
@@ -90,6 +98,7 @@ public class UserEntity implements Serializable{
 
     /**
      * recoge username
+     *
      * @return username
      */
     public String getUsername() {
@@ -98,6 +107,7 @@ public class UserEntity implements Serializable{
 
     /**
      * set username
+     *
      * @param username
      */
     public void setUsername(String username) {
@@ -114,6 +124,7 @@ public class UserEntity implements Serializable{
 
     /**
      * set email
+     *
      * @param email
      */
     public void setEmail(String email) {
@@ -122,6 +133,7 @@ public class UserEntity implements Serializable{
 
     /**
      * Recoge fullName
+     *
      * @return
      */
     public String getFullName() {
@@ -130,6 +142,7 @@ public class UserEntity implements Serializable{
 
     /**
      * set fullName
+     *
      * @param fullName
      */
     public void setFullName(String fullName) {
@@ -138,6 +151,7 @@ public class UserEntity implements Serializable{
 
     /**
      * Recoge password
+     *
      * @return password
      */
     public String getPassword() {
@@ -146,6 +160,7 @@ public class UserEntity implements Serializable{
 
     /**
      * set password
+     *
      * @param password
      */
     public void setPassword(String password) {
@@ -154,6 +169,7 @@ public class UserEntity implements Serializable{
 
     /**
      * recoge userStatus
+     *
      * @return userStatus
      */
     public UserStatusType getUserStatus() {
@@ -162,6 +178,7 @@ public class UserEntity implements Serializable{
 
     /**
      * set userStatus
+     *
      * @param UserStatus
      */
     public void setUserStatus(UserStatusType UserStatus) {
@@ -170,6 +187,7 @@ public class UserEntity implements Serializable{
 
     /**
      * recoge userPrivilege
+     *
      * @return
      */
     public UserPrivilegeType getUserPrivilege() {
@@ -178,6 +196,7 @@ public class UserEntity implements Serializable{
 
     /**
      * set userPrivilege
+     *
      * @param UserPrivilege
      */
     public void setUserPrivilege(UserPrivilegeType UserPrivilege) {
@@ -186,6 +205,7 @@ public class UserEntity implements Serializable{
 
     /**
      * recoge lastPasswordChange
+     *
      * @return lastPasswordChange
      */
     public Date getLastPasswordChange() {
@@ -194,6 +214,7 @@ public class UserEntity implements Serializable{
 
     /**
      * set lastPasswordChange
+     *
      * @param lastPasswordChange
      */
     public void setLastPasswordChange(Date lastPasswordChange) {
@@ -202,6 +223,7 @@ public class UserEntity implements Serializable{
 
     /**
      * HashCode
+     *
      * @return int
      */
     @Override
@@ -220,6 +242,7 @@ public class UserEntity implements Serializable{
 
     /**
      * Metodo para comparacion de entidades
+     *
      * @param obj
      * @return boolean con si es igual o no
      */
@@ -264,11 +287,12 @@ public class UserEntity implements Serializable{
 
     /**
      * Metodo toString con datos de la entidad
+     *
      * @return datos de la entidad
      */
     @Override
     public String toString() {
         return "UserEntity{" + "id=" + id + ", username=" + username + ", email=" + email + ", fullName=" + fullName + ", password=" + password + ", UserStatus=" + UserStatus + ", UserPrivilege=" + UserPrivilege + ", lastPasswordChange=" + lastPasswordChange + '}';
     }
-    
+
 }

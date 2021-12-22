@@ -7,6 +7,7 @@ package restful;
 
 import entidades.ContratoEntity;
 import entidades.TrabajadorEntity;
+import entidades.UserEntity;
 import entidades.ZonaEntity;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +29,7 @@ import javax.ws.rs.core.MediaType;
 
 /**
  *
- * @author 2dam
+ * @author Alain Cosgaya
  */
 @Stateless
 @Path("entidades.trabajadorentity")
@@ -146,6 +147,50 @@ public class TrabajadorEntityFacadeREST extends AbstractFacade<TrabajadorEntity>
         return trabajadores;
     }
 
+    @GET
+    @Path("trabajadoresAsignarZona/{idZona}/{idGranja}")
+    @Produces({MediaType.APPLICATION_XML})
+    public List<TrabajadorEntity>
+            trabajadoresAsignarZona(@PathParam("idZona") Long idZona,
+                    @PathParam("idGranja") Long idGranja) {
+        List<TrabajadorEntity> trabajadores = null;
+        try {
+            LOGGER.info("Recogiendo listado de trabajadores posibles para asignar una zona");
+
+            trabajadores = em.createNamedQuery("trabajadoresPorAsignarZona")
+                    .setParameter("zonaId", idZona).setParameter("granjaId", idGranja).getResultList();
+        } catch (Exception e) {
+            LOGGER.severe("Error listando trabajadores posibles para asignar a la zona. "
+                    + e.getLocalizedMessage());
+
+        }
+        return trabajadores;
+    }
+
+    @GET
+    @Path("registro")
+    @Produces({MediaType.APPLICATION_XML})
+    public void registro(TrabajadorEntity trabajadorEntity) {
+        trabajadorEntity = new TrabajadorEntity();
+        List<UserEntity> users = null;
+
+        try {
+            LOGGER.info("Recogiendo listado de usuarios registrados");
+            users = em.createNamedQuery("validarRegistro")
+                    .setParameter("username", trabajadorEntity.getUsername())
+                    .setParameter("email", trabajadorEntity.getEmail()).getResultList();
+            if (users.isEmpty()) {
+                em.merge(trabajadorEntity);
+                LOGGER.info("El trabajador ha sido registrado correctamente");
+            } else {
+
+            }
+
+        } catch (Exception e) {
+            LOGGER.severe("Error registrando al usuario. " + e.getLocalizedMessage());
+        }
+
+    }
 
     @Override
     protected EntityManager getEntityManager() {

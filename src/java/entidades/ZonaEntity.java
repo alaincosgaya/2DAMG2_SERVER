@@ -49,6 +49,10 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQuery(
 		name="quitarTrabajadorZona", 
 		query="SELECT z FROM ZonaEntity z WHERE z.idZona=:idZona AND z.idZona in" +"(SELECT t FROM TrabajadorEntity t WHERE t.username=:username)"
+),
+@NamedQuery(
+		name="asignarTrabajador", 
+		query="SELECT t FROM TrabajadorEntity t WHERE t.username=:username"
 )
 
 })

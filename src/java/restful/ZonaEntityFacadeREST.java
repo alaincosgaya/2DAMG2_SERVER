@@ -75,6 +75,7 @@ public class ZonaEntityFacadeREST extends AbstractFacade<ZonaEntity> {
 
         for (TrabajadorEntity trabajador : zona.getTrabajadores()) {
             if (trabajador.getUsername().equals(username)) {
+                logger.info("Existe el usuario");
                 zona.getTrabajadores().remove(trabajador);
                 break;
             }

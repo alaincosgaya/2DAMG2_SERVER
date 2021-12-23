@@ -26,7 +26,7 @@ public class Cifrado {
     private static byte[] salt = "esta es la salt!".getBytes();
 
    
-    public String generarContra() {
+    public static String generarContra() {
         //new KeyGenerator().generate();
         
         String mensaje = randomPassword();

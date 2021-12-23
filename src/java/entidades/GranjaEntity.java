@@ -15,6 +15,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -28,20 +30,29 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(
             name = "granjasPorLoginDelGranjero", query = "SELECT g FROM GranjaEntity g WHERE g.granjero.id in "
-            + "(SELECT gr.id FROM GranjeroEntity gr WHERE gr.username=:username)" 
+            + "(SELECT gr.id FROM GranjeroEntity gr WHERE gr.username=:username)"
     ),
     @NamedQuery(
             name = "granjaPorNombre", query = "SELECT g FROM GranjaEntity g WHERE g.nombreGranja=:nombreGranja"
     ),
     @NamedQuery(
-            name = "GranjaALaQuePerteneceEsazona", query = "SELECT g FROM GranjaEntity g WHERE g.idGranja in "
+            name = "granjaPorId", query = "SELECT g FROM GranjaEntity g WHERE g.idGranja=:idGranja"
+    ),
+    @NamedQuery(
+            name = "granjaALaQuePerteneceEsazona", query = "SELECT g FROM GranjaEntity g WHERE g.idGranja in "
             + "(SELECT z.granja.idGranja FROM ZonaEntity z WHERE z.nombreZona=:nombreZona)"
     ),
     @NamedQuery(
-            name = "GranjasEnLasQueTrabajaEseTrabajador", query = "SELECT g FROM GranjaEntity g WHERE g.idGranja in "
+            name = "granjasEnLasQueTrabajaEseTrabajador", query = "SELECT g FROM GranjaEntity g WHERE g.idGranja in "
             + "(SELECT c.granja.idGranja FROM ContratoEntity c WHERE c.trabajador.id in "
             + "(SELECT t.id FROM TrabajadorEntity t WHERE t.username=:username))"
-    ),  
+    ),/*
+    @NamedQuery(
+            name = "updateNombreDeLaGranja", query = "UPDATE GranjaEntity g SET g.nombreGranja=:nombreGranjaNuevo WHERE g.idGranja=:idGranja"
+    ),*/
+    @NamedQuery(
+            name = "deleteGranja", query = "DELETE FROM GranjaEntity g WHERE g.idGranja=:idGranja"
+    )
 
 })
 @Entity

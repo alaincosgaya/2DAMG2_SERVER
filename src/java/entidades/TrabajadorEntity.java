@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 import static javax.persistence.CascadeType.ALL;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
@@ -49,6 +50,7 @@ import javax.xml.bind.annotation.XmlTransient;
 })
 @Entity
 @Table(name="trabajador",schema="G2Lauserri")
+@DiscriminatorValue(value="TRABAJADOR")
 @XmlRootElement
 public class TrabajadorEntity extends UserEntity implements Serializable {
 

@@ -31,8 +31,8 @@ import java.util.logging.Logger;
 public class GranjeroEntityFacadeREST extends AbstractFacade<GranjeroEntity> {
 
     @PersistenceContext(unitName = "LauserriServidorPU")
-    private final Logger LOGGER = Logger.getLogger(TrabajadorEntityFacadeREST.class.getName());
     private EntityManager em;
+    private final Logger LOGGER = Logger.getLogger(GranjeroEntityFacadeREST.class.getName());
 
     public GranjeroEntityFacadeREST() {
         super(GranjeroEntity.class);

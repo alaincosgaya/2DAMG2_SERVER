@@ -126,6 +126,7 @@ public class UserEntityFacadeREST extends AbstractFacade<UserEntity> {
         	Cifrado cf = new Cifrado();
 		String contra = cf.generarContra();
 		users.get(0).setPassword(contra);
+                
 		em.merge(users.get(0));
                 
                 em.flush();

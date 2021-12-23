@@ -28,7 +28,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(
             name = "granjasPorLoginDelGranjero", query = "SELECT g FROM GranjaEntity g WHERE g.granjero.id in "
-            + "(SELECT gr.id FROM GranjeroEntity gr WHERE gr.username=:username)"
+            + "(SELECT gr.id FROM GranjeroEntity gr WHERE gr.username=:username)" 
     ),
     @NamedQuery(
             name = "granjaPorNombre", query = "SELECT g FROM GranjaEntity g WHERE g.nombreGranja=:nombreGranja"

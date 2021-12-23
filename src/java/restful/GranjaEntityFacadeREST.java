@@ -5,8 +5,11 @@
  */
 package restful;
 
+import com.sun.corba.se.impl.ior.ObjectReferenceFactoryImpl;
 import entidades.GranjaEntity;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -27,7 +30,7 @@ import javax.ws.rs.core.MediaType;
 @Stateless
 @Path("entidades.granjaentity")
 public class GranjaEntityFacadeREST extends AbstractFacade<GranjaEntity> {
-
+    private static final Logger LOGGER = Logger.getLogger(GranjaEntityFacadeREST.class.getName());
     @PersistenceContext(unitName = "LauserriServidorPU")
     private EntityManager em;
 
@@ -92,14 +95,14 @@ public class GranjaEntityFacadeREST extends AbstractFacade<GranjaEntity> {
             LOGGER.info("Listado de las granjas del granjero");
             granjas = em.createNamedQuery("granjasPorLoginDelGranjero").setParameter("username", username).getResultList();
         } catch (Exception e) {
-            LOGGER.severe("No hay granjas corrrespondientes a ese granjero " +e.getLocalizedMessage());
+            LOGGER.log(Level.SEVERE, "No hay granjas corrrespondientes a ese granjero {0} ", e.getLocalizedMessage());
         }
         return granjas;
     }
     
 
     @GET
-    @Path("nombreGranja/{nombreGranja}")
+    @Path("granjaNombreGranja/{nombreGranja}")
     @Produces({MediaType.APPLICATION_XML})
     public GranjaEntity granjaPorNombre(@PathParam("nombreGranja") String nombreGranja) {
         GranjaEntity granja = null;
@@ -107,7 +110,21 @@ public class GranjaEntityFacadeREST extends AbstractFacade<GranjaEntity> {
             LOGGER.info("Listado de la granja con ese nombre");
             granja = (GranjaEntity) em.createNamedQuery("granjaPorNombre").setParameter("nombreGranja", nombreGranja).getSingleResult();
         } catch (Exception e) {
-            LOGGER.severe("No hay ninguna granja existente con ese nombre " +e.getLocalizedMessage());
+            LOGGER.log(Level.SEVERE, "No hay ninguna granja existente con ese nombre {0} ", e.getLocalizedMessage());
+        }
+        return granja;
+    }
+    
+    @GET
+    @Path("granjaidGranja/{idGranja}")
+    @Produces({MediaType.APPLICATION_XML})
+    public GranjaEntity granjaPorId(@PathParam("idGranja") Long idGranja) {
+        GranjaEntity granja = null;
+        try {
+            LOGGER.info("Listado de la granja con esa idq");
+            granja = (GranjaEntity) em.createNamedQuery("granjaPorId").setParameter("idGranja", idGranja).getSingleResult();
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "No hay ninguna granja existente con ese nombre {0} ", e.getLocalizedMessage());
         }
         return granja;
     }
@@ -115,13 +132,13 @@ public class GranjaEntityFacadeREST extends AbstractFacade<GranjaEntity> {
     @GET
     @Path("GranjaPerteneceZona/{nombreZona}")
     @Produces({MediaType.APPLICATION_XML})
-    public GranjaEntity GranjaALaQuePerteneceEsazona(@PathParam("nombreZona") String nombreZona) {
+    public GranjaEntity granjaALaQuePerteneceEsazona(@PathParam("nombreZona") String nombreZona) {
        GranjaEntity granja = null;
         try {
             LOGGER.info("Listado de la granja a la que pertenece esa zona");
-            granja =  (GranjaEntity) em.createNamedQuery("GranjaALaQuePerteneceEsazona").setParameter("nombreZona", nombreZona).getSingleResult();
+            granja =  (GranjaEntity) em.createNamedQuery("granjaALaQuePerteneceEsazona").setParameter("nombreZona", nombreZona).getSingleResult();
         } catch (Exception e) {
-            LOGGER.severe("No hay ninguna zona asociada a esa granja " +e.getLocalizedMessage());
+            LOGGER.log(Level.SEVERE, "No hay ninguna zona asociada a esa granja {0} ", e.getLocalizedMessage());
         }
         return granja;
     }
@@ -133,16 +150,65 @@ public class GranjaEntityFacadeREST extends AbstractFacade<GranjaEntity> {
         List<GranjaEntity> granjas = null;
         try {
             LOGGER.info("Listado de las granjas donde trabaja ese trabajador");
-            granjas = em.createNamedQuery("GranjasEnLasQueTrabajaEseTrabajador").setParameter("username", username).getResultList();
+            granjas = em.createNamedQuery("granjasEnLasQueTrabajaEseTrabajador").setParameter("username", username).getResultList();
         } catch (Exception e) {
-            LOGGER.severe("No hay ningun trabajador que trabaje en esa granja " +e.getLocalizedMessage());
+            LOGGER.log(Level.SEVERE, "No hay ningun trabajador que trabaje en esa granja {0} ", e.getLocalizedMessage());
         }
         return granjas;
     }
-
+    
+    /*@PUT
+    @Path("updateNombreGranja/{idGranja}/{nombreGranjaNuevo}")
+    @Consumes({MediaType.APPLICATION_XML})
+    public GranjaEntity  updateNombreDeLaGranja(@PathParam("idGranja") Long idGranja, @PathParam("nombreGranjaNuevo") String nombreGranjaNuevo, GranjaEntity granja) {
+        try{
+            LOGGER.info("Cambio en la granja seleccionada por su id");
+            em.createNamedQuery("updateNombreDeLaGranja").setParameter("idGranja", idGranja).executeUpdate();
+            granja.setNombreGranja(nombreGranjaNuevo);
+        }catch (Exception e){
+            LOGGER.log(Level.SEVERE, "Fallo al intentar cambiar el nombre a esa granja {0} ", e.getLocalizedMessage());
+        }
+        em.flush();
+        
+        return (GranjaEntity) em.createNamedQuery("granjaPorId").setParameter("idGranja", idGranja).getSingleResult();
+    }*/
+    
+    @GET
+    @Path("updateNombreGranja/{idGranja}/{nombreGranjaNuevo}")
+    @Produces({MediaType.APPLICATION_XML})
+    public void updateNombreDeLaGranja(@PathParam("idGranja") Long idGranja, @PathParam("nombreGranjaNuevo") String nombreGranjaNuevo) {
+       GranjaEntity granja = null;
+        try{
+            LOGGER.info("Cambio en la granja seleccionada por su id");
+           granja = (GranjaEntity) em.createNamedQuery("granjaPorId").setParameter("idGranja", idGranja).getSingleResult();
+            granja.setNombreGranja(nombreGranjaNuevo);
+        }catch (Exception e){
+            LOGGER.log(Level.SEVERE, "Fallo al intentar cambiar el nombre a esa granja {0} ", e.getLocalizedMessage());
+        }
+        
+        em.flush();
+    }
+    
+    /*@PUT
+    @Path("{id}")
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public void edit1(@PathParam("id") Long id, GranjaEntity entity) {
+        super.edit(entity);
+    }*/
+    
+    @DELETE
+    @Path("deleteGranja/{idGranja}")
+    public void deleteGranja(@PathParam("idGranja") Long idGranja) {
+        try{
+            em.createNamedQuery("deleteGranja").setParameter("idGranja", idGranja).executeUpdate();
+        }catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Fallo al intentar borrar esa granja {0} ", e.getLocalizedMessage());
+        }
+    }
+    
     @Override
     protected EntityManager getEntityManager() {
         return em;
     }
-    
+
 }

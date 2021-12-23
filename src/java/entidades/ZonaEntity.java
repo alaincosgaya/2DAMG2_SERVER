@@ -13,6 +13,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -23,6 +25,37 @@ import javax.xml.bind.annotation.XmlTransient;
  *
  * @author Idoia Ormaetxea
  */
+@NamedQueries({
+	@NamedQuery(
+		name="zonasPorNombre", 
+		query="SELECT z FROM ZonaEntity z WHERE z.nombreZona=:nombreZona"
+),
+@NamedQuery(
+		name="zonasPorAnimal", 
+		query="SELECT z FROM ZonaEntity z WHERE z.idZona in " + "(SELECT a.zona.idZona FROM AnimalEntity a WHERE a.tipo=:tipo)"
+),
+@NamedQuery(
+		name="zonasPorTrabajador", 
+		query="SELECT z FROM ZonaEntity z WHERE z.idZona in" + "(SELECT t FROM TrabajadorEntity t WHERE t.username=:username)"
+),
+@NamedQuery(
+		name="zonasPorGranja", 
+		query="SELECT z FROM ZonaEntity z WHERE z.idZona in" + "(SELECT g FROM GranjaEntity g WHERE g.idGranja=:idGranja)"
+),
+@NamedQuery(
+		name="cambiarNombreZona", 
+		query="SELECT z FROM ZonaEntity z WHERE z.nombreZona=:nombreZona"
+),
+@NamedQuery(
+		name="quitarTrabajadorZona", 
+		query="SELECT z FROM ZonaEntity z WHERE z.idZona=:idZona AND z.idZona in" +"(SELECT t FROM TrabajadorEntity t WHERE t.username=:username)"
+),
+@NamedQuery(
+		name="asignarTrabajador", 
+		query="SELECT t FROM TrabajadorEntity t WHERE t.username=:username"
+)
+
+})
 @Entity
 @Table(name="zona", schema = "G2Lauserri")
 @XmlRootElement

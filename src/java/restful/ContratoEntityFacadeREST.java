@@ -8,6 +8,7 @@ package restful;
 import entidades.ContratoEntity;
 import entidades.ContratoId;
 import java.util.List;
+import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -24,7 +25,7 @@ import javax.ws.rs.core.PathSegment;
 
 /**
  *
- * @author 2dam
+ * @author Alain Cosgaya
  */
 @Stateless
 @Path("entidades.contratoentity")
@@ -32,6 +33,7 @@ public class ContratoEntityFacadeREST extends AbstractFacade<ContratoEntity> {
 
     @PersistenceContext(unitName = "LauserriServidorPU")
     private EntityManager em;
+    private final Logger LOGGER = Logger.getLogger(ContratoEntityFacadeREST.class.getName());
 
     private ContratoId getPrimaryKey(PathSegment pathSegment) {
         /*
@@ -67,7 +69,7 @@ public class ContratoEntityFacadeREST extends AbstractFacade<ContratoEntity> {
 
     @PUT
     @Path("{id}")
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Consumes({MediaType.APPLICATION_XML})
     public void edit(@PathParam("id") PathSegment id, ContratoEntity entity) {
         super.edit(entity);
     }
@@ -81,7 +83,7 @@ public class ContratoEntityFacadeREST extends AbstractFacade<ContratoEntity> {
 
     @GET
     @Path("{id}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML})
     public ContratoEntity find(@PathParam("id") PathSegment id) {
         entidades.ContratoId key = getPrimaryKey(id);
         return super.find(key);
@@ -89,28 +91,66 @@ public class ContratoEntityFacadeREST extends AbstractFacade<ContratoEntity> {
 
     @GET
     @Override
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML})
     public List<ContratoEntity> findAll() {
         return super.findAll();
     }
 
-    @GET
-    @Path("{from}/{to}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<ContratoEntity> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
-        return super.findRange(new int[]{from, to});
+
+    @DELETE
+    @Path("despedir/{idTrabajador}/{idGranja}")
+    public void despedirTrabajador(@PathParam("idTrabajador") Long idTrabajador, @PathParam("idGranja") Long idGranja) {
+        try {
+            em.createNamedQuery("despedirTrabajador").setParameter("idTrabajador", idTrabajador)
+                    .setParameter("idGranja", idGranja).executeUpdate();
+            LOGGER.info("Despido del trabajador realizado correctamente");
+        } catch (Exception e) {
+            LOGGER.severe("Error al despedir trabajador. "
+                    + e.getLocalizedMessage());
+        }
+
     }
 
+    /*@PUT
+    @Path("cambiarSueldo")
+    public void cambiarSueldo(ContratoEntity contrato) {
+        try {
+            
+            em.createNamedQuery("cambiarSueldo").setParameter("salario",10).setParameter("idTrabajador",1).setParameter("idGranja",1).executeUpdate();
+            if (!em.contains(contrato)) {
+                em.merge(contrato);
+            }
+            em.flush();
+        } catch (Exception e) {
+
+        }
+    }*/
     @GET
-    @Path("count")
-    @Produces(MediaType.TEXT_PLAIN)
-    public String countREST() {
-        return String.valueOf(super.count());
+    @Path("cambiarSueldo/{idTrabajador}/{idGranja}/{salario}")
+    public void cambiarSueldo(@PathParam("idTrabajador") Long idTrabajador,
+            @PathParam("idGranja") Long idGranja, @PathParam("salario") Long salario) {
+        ContratoEntity contrato = null;
+        try {
+            contrato = (ContratoEntity) em.createNamedQuery("contratoTrabajador")
+                    .setParameter("idTrabajador", idTrabajador)
+                    .setParameter("idGranja", idGranja).getSingleResult();
+            LOGGER.info("Recogiendo contrato del trabajador");
+
+            contrato.setSalario(salario);
+            if (!em.contains(contrato)) {
+                em.merge(contrato);
+                LOGGER.info("Cambios del sueldo del trabajador exitoso");
+            }
+            em.flush();
+        } catch (Exception e) {
+            LOGGER.severe("Error al modificar datos del trabajador. "
+                    + e.getLocalizedMessage());
+        }
     }
 
     @Override
     protected EntityManager getEntityManager() {
         return em;
     }
-    
+
 }

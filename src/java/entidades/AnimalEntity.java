@@ -17,7 +17,7 @@ import javax.persistence.Temporal;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- *
+ * JavaBean de 
  * @author Jonathan Camacho
  */
 @NamedQueries({

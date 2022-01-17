@@ -38,7 +38,20 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(
             name="contratoTrabajador", query="SELECT c FROM ContratoEntity c "
                     + "WHERE c.idContrato.granjaId=:idGranja AND c.idContrato.trabajadorId=:idTrabajador"
+    ),
+    @NamedQuery(
+            name = "contratosGranjero", query = "SELECT c From ContratoEntity c "
+            + "WHERE c.idContrato.granjaId IN (SELECT g2 From GranjeroEntity g JOIN g.granjas g2 WHERE g.id=:idGranjero)"
+    ),
+    @NamedQuery(
+            name="contratosTrabajador", query="SELECT c FROM ContratoEntity c "
+                    + "WHERE c.idContrato.trabajadorId=:idTrabajador"
+    ),
+    @NamedQuery(
+            name="contratosGranja", query="SELECT c FROM ContratoEntity c WHERE "
+                    + " c.idContrato.granjaId=:idGranja"
     )
+   
 })
 @Entity
 @Table(name="contrato", schema="G2Lauserri")

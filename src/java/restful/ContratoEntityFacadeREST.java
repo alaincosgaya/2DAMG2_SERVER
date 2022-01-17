@@ -111,7 +111,7 @@ public class ContratoEntityFacadeREST extends AbstractFacade<ContratoEntity> {
 
     }
 
-    @GET
+    /*@GET
     @Path("cambiarSueldo")
     public void cambiarSueldo(ContratoEntity contrato) {
         try {
@@ -124,9 +124,10 @@ public class ContratoEntityFacadeREST extends AbstractFacade<ContratoEntity> {
         } catch (Exception e) {
 
         }
-    }
-    /*@GET
+    }*/
+    @GET
     @Path("cambiarSueldo/{idTrabajador}/{idGranja}/{salario}")
+    @Produces({MediaType.APPLICATION_XML})
     public void cambiarSueldo(@PathParam("idTrabajador") Long idTrabajador,
             @PathParam("idGranja") Long idGranja, @PathParam("salario") Long salario) {
         ContratoEntity contrato = null;
@@ -146,7 +147,53 @@ public class ContratoEntityFacadeREST extends AbstractFacade<ContratoEntity> {
             LOGGER.severe("Error al modificar datos del trabajador. "
                     + e.getLocalizedMessage());
         }
-    }*/
+    
+    }
+    
+    @GET
+    @Path("contratosGranjero/{idGranjero}")
+    @Produces({MediaType.APPLICATION_XML})
+    public List<ContratoEntity> contratosGranjero (@PathParam("idGranjero") Long idGranjero) {
+        List<ContratoEntity> contratos = null;
+        try{
+            contratos = em.createNamedQuery("contratosGranjero").setParameter("idGranjero", idGranjero).getResultList();
+        }catch(Exception e){
+             LOGGER.severe("Error al listar los contratos por granjero. "
+                    + e.getLocalizedMessage());
+        }
+        return contratos;
+    }
+    
+    @GET
+    @Path("contratosTrabajador/{idTrabajador}")
+    @Produces({MediaType.APPLICATION_XML})
+    public List<ContratoEntity> contratosTrabajador (@PathParam("idTrabajador") Long idTrabajador) {
+        List<ContratoEntity> contratos = null;
+        try{
+            contratos = em.createNamedQuery("contratosTrabajador").setParameter("idTrabajador", idTrabajador).getResultList();
+        }catch(Exception e){
+             LOGGER.severe("Error al listar los contratos por granjero. "
+                    + e.getLocalizedMessage());
+        }
+        return contratos;
+    }
+    
+    @GET
+    @Path("contratosGranja/{idGranja}")
+    @Produces({MediaType.APPLICATION_XML})
+    public List<ContratoEntity> contratosGranja (@PathParam("idGranja") Long idGranja) {
+        List<ContratoEntity> contratos = null;
+        try{
+            contratos = em.createNamedQuery("contratosGranja").setParameter("idGranja", idGranja).getResultList();
+        }catch(Exception e){
+             LOGGER.severe("Error al listar los contratos por granjero. "
+                    + e.getLocalizedMessage());
+        }
+        return contratos;
+    }
+    
+
+   
 
     @Override
     protected EntityManager getEntityManager() {

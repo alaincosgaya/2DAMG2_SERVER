@@ -6,6 +6,7 @@
 package restful;
 
 import entidades.GranjeroEntity;
+import entidades.UserEntity;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -19,6 +20,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.util.logging.Logger;
 
 /**
  *
@@ -30,6 +32,7 @@ public class GranjeroEntityFacadeREST extends AbstractFacade<GranjeroEntity> {
 
     @PersistenceContext(unitName = "LauserriServidorPU")
     private EntityManager em;
+    private final Logger LOGGER = Logger.getLogger(GranjeroEntityFacadeREST.class.getName());
 
     public GranjeroEntityFacadeREST() {
         super(GranjeroEntity.class);
@@ -83,9 +86,34 @@ public class GranjeroEntityFacadeREST extends AbstractFacade<GranjeroEntity> {
         return String.valueOf(super.count());
     }
 
+    @GET
+    @Path("registro")
+    @Produces({MediaType.APPLICATION_XML})
+    public void registro(GranjeroEntity granjeroEntity) {
+        granjeroEntity = new GranjeroEntity();
+        List<UserEntity> users = null;
+
+        try {
+            LOGGER.info("Recogiendo listado de usuarios registrados");
+            users = em.createNamedQuery("validarRegistro")
+                    .setParameter("username", granjeroEntity.getUsername())
+                    .setParameter("email", granjeroEntity.getEmail()).getResultList();
+            if (users.isEmpty()) {
+                em.merge(granjeroEntity);
+                LOGGER.info("El granjero ha sido registrado correctamente");
+            } else {
+
+            }
+
+        } catch (Exception e) {
+            LOGGER.severe("Error registrando al usuario. " + e.getLocalizedMessage());
+        }
+
+    }
+
     @Override
     protected EntityManager getEntityManager() {
         return em;
     }
-    
+
 }

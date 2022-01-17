@@ -111,7 +111,7 @@ public class ContratoEntityFacadeREST extends AbstractFacade<ContratoEntity> {
 
     }
 
-    /*@PUT
+    /*@GET
     @Path("cambiarSueldo")
     public void cambiarSueldo(ContratoEntity contrato) {
         try {
@@ -147,6 +147,7 @@ public class ContratoEntityFacadeREST extends AbstractFacade<ContratoEntity> {
             LOGGER.severe("Error al modificar datos del trabajador. "
                     + e.getLocalizedMessage());
         }
+    
     }
     
     @GET
@@ -177,7 +178,7 @@ public class ContratoEntityFacadeREST extends AbstractFacade<ContratoEntity> {
         return contratos;
     }
     
-     @GET
+    @GET
     @Path("contratosGranja/{idGranja}")
     @Produces({MediaType.APPLICATION_XML})
     public List<ContratoEntity> contratosGranja (@PathParam("idGranja") Long idGranja) {
@@ -191,6 +192,9 @@ public class ContratoEntityFacadeREST extends AbstractFacade<ContratoEntity> {
         return contratos;
     }
     
+
+   
+
     @Override
     protected EntityManager getEntityManager() {
         return em;

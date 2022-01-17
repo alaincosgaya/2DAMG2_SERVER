@@ -127,6 +127,7 @@ public class ContratoEntityFacadeREST extends AbstractFacade<ContratoEntity> {
     }*/
     @GET
     @Path("cambiarSueldo/{idTrabajador}/{idGranja}/{salario}")
+    @Produces({MediaType.APPLICATION_XML})
     public void cambiarSueldo(@PathParam("idTrabajador") Long idTrabajador,
             @PathParam("idGranja") Long idGranja, @PathParam("salario") Long salario) {
         ContratoEntity contrato = null;
@@ -146,6 +147,20 @@ public class ContratoEntityFacadeREST extends AbstractFacade<ContratoEntity> {
             LOGGER.severe("Error al modificar datos del trabajador. "
                     + e.getLocalizedMessage());
         }
+    }
+    
+    @GET
+    @Path("contratosGranjero/{idGranjero}")
+    @Produces({MediaType.APPLICATION_XML})
+    public List<ContratoEntity> contratosGranjero (@PathParam("idGranjero") Long idGranjero) {
+        List<ContratoEntity> contratos = null;
+        try{
+            contratos = em.createNamedQuery("contratosGranjero").setParameter("idGranjero", idGranjero).getResultList();
+        }catch(Exception e){
+             LOGGER.severe("Error al listar los contratos por granjero. "
+                    + e.getLocalizedMessage());
+        }
+        return contratos;
     }
 
     @Override

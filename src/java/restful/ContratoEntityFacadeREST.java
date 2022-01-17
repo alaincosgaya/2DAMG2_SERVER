@@ -162,7 +162,35 @@ public class ContratoEntityFacadeREST extends AbstractFacade<ContratoEntity> {
         }
         return contratos;
     }
-
+    
+    @GET
+    @Path("contratosTrabajador/{idTrabajador}")
+    @Produces({MediaType.APPLICATION_XML})
+    public List<ContratoEntity> contratosTrabajador (@PathParam("idTrabajador") Long idTrabajador) {
+        List<ContratoEntity> contratos = null;
+        try{
+            contratos = em.createNamedQuery("contratosTrabajador").setParameter("idTrabajador", idTrabajador).getResultList();
+        }catch(Exception e){
+             LOGGER.severe("Error al listar los contratos por granjero. "
+                    + e.getLocalizedMessage());
+        }
+        return contratos;
+    }
+    
+     @GET
+    @Path("contratosGranja/{idGranja}")
+    @Produces({MediaType.APPLICATION_XML})
+    public List<ContratoEntity> contratosGranja (@PathParam("idGranja") Long idGranja) {
+        List<ContratoEntity> contratos = null;
+        try{
+            contratos = em.createNamedQuery("contratosGranja").setParameter("idGranja", idGranja).getResultList();
+        }catch(Exception e){
+             LOGGER.severe("Error al listar los contratos por granjero. "
+                    + e.getLocalizedMessage());
+        }
+        return contratos;
+    }
+    
     @Override
     protected EntityManager getEntityManager() {
         return em;

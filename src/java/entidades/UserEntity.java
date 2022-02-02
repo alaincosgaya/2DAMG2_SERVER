@@ -37,6 +37,10 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name="usuarioPorLogin",query="SELECT u FROM UserEntity u "
             + "WHERE u.username=:username"
 
+    ),
+    @NamedQuery(name="usuarioPorEmail",query="SELECT u FROM UserEntity u "
+            + "WHERE u.email=:email"
+
     )
 })
 

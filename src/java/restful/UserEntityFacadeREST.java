@@ -170,8 +170,9 @@ public class UserEntityFacadeREST extends AbstractFacade<UserEntity> {
             Mail.sendEmail(mail, contra);
             em.merge(users.get(0));
 
-            em.flush();
+            
         }
+        em.flush();
     }
 
     @GET

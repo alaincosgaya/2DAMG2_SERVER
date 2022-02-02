@@ -1,5 +1,6 @@
 package entidades;
 
+import com.sun.istack.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
@@ -17,7 +18,9 @@ import javax.persistence.Temporal;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * JavaBean de 
+ * JavaBean de AnimalEntity, con las queries, atributos,constructores, getters y
+ * setters, hashCode, equals y toString correspondientes.
+ *
  * @author Jonathan Camacho
  */
 @NamedQueries({
@@ -35,9 +38,10 @@ import javax.xml.bind.annotation.XmlRootElement;
     ,
     @NamedQuery(
             name = "animalesPorEstado", query = "SELECT a FROM AnimalEntity a WHERE a.estado=:estado"
-    ), 
+    )
+    , 
     @NamedQuery(
-            name="cambiarEstadoAnimal", query="SELECT a FROM AnimalEntity a  WHERE a.idAnimal=:idAnimal"
+            name = "modificacionAnimal", query = "SELECT a FROM AnimalEntity a  WHERE a.idAnimal=:idAnimal"
     )
 })
 @Entity
@@ -181,7 +185,6 @@ public class AnimalEntity implements Serializable {
         }
         return true;
     }
-
     @Override
     public String toString() {
         return "Animal{" + "idAnimal=" + idAnimal + ", nombreAnimel=" + nombreAnimal + ", tipo=" + tipo + ", estado=" + estado + ", fechaNacimiento=" + fechaNacimiento + ", sexoAnimal=" + sexo + ", zona=" + zona + '}';

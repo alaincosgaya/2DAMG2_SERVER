@@ -10,8 +10,8 @@ import java.util.Objects;
 import javax.persistence.Embeddable;
 
 /**
- *
- * @author Jonathan Camacho
+ * Clase de la id de la entidad de contratos
+ * @author Jonathan Camacho y Alain Cosgaya
  */
 @Embeddable
 public class ContratoId implements Serializable{

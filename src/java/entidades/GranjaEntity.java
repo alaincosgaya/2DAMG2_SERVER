@@ -60,9 +60,6 @@ import javax.xml.bind.annotation.XmlTransient;
     ),
     @NamedQuery(
             name = "deleteGranja", query = "DELETE FROM GranjaEntity g WHERE g.idGranja=:idGranja"  
-    ),
-    @NamedQuery(
-            name = "deleteGranja", query = "DELETE FROM GranjaEntity g WHERE g.idGranja=:idGranja"
     )
 
 })

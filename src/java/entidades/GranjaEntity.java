@@ -25,7 +25,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Alejandro Gómez
+ * @author Alejandro Gomez
  */
 @NamedQueries({
     @NamedQuery(
@@ -46,10 +46,21 @@ import javax.xml.bind.annotation.XmlTransient;
             name = "granjasEnLasQueTrabajaEseTrabajador", query = "SELECT g FROM GranjaEntity g WHERE g.idGranja in "
             + "(SELECT c.granja.idGranja FROM ContratoEntity c WHERE c.trabajador.id in "
             + "(SELECT t.id FROM TrabajadorEntity t WHERE t.username=:username))"
-    ),/*
+    ),
+@NamedQuery(
+            name = "granjasEnLasQueNoTrabajaEseTrabajador", query = "SELECT g FROM GranjaEntity g WHERE g.idGranja NOT IN "
+            + "(SELECT c.granja.idGranja FROM ContratoEntity c WHERE c.trabajador.id in "
+            + "(SELECT t.id FROM TrabajadorEntity t WHERE t.username=:username))"
+    ),
     @NamedQuery(
             name = "updateNombreDeLaGranja", query = "UPDATE GranjaEntity g SET g.nombreGranja=:nombreGranjaNuevo WHERE g.idGranja=:idGranja"
-    ),*/
+    ),
+    @NamedQuery(
+            name = "updateFechaCreacionDeLaGranja", query = "UPDATE GranjaEntity g SET g.fechaCreacion=:fechaCreacionGranjaNueva WHERE g.idGranja=:idGranja"
+    ),
+    @NamedQuery(
+            name = "deleteGranja", query = "DELETE FROM GranjaEntity g WHERE g.idGranja=:idGranja"  
+    ),
     @NamedQuery(
             name = "deleteGranja", query = "DELETE FROM GranjaEntity g WHERE g.idGranja=:idGranja"
     )

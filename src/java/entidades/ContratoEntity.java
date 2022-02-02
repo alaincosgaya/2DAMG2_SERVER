@@ -22,10 +22,12 @@ import javax.persistence.Temporal;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- *
+ * Entidad de la clase de Contrato
  * @author Jonathan Camacho y Alain Cosgaya
  */
 
+
+// Queries de Contratos
 @NamedQueries({
     @NamedQuery(
             name="despedirTrabajador", query="DELETE FROM ContratoEntity c "
@@ -57,8 +59,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name="contrato", schema="G2Lauserri")
 @XmlRootElement
 public class ContratoEntity implements Serializable {
-
+  
     private static final long serialVersionUID = 1L;
+    // Atributos de la entidad
     @EmbeddedId
     private ContratoId idContrato;
     @MapsId("trabajadorId")
@@ -71,7 +74,7 @@ public class ContratoEntity implements Serializable {
     private Date fechaContratacion;
     
     private Long salario;
-
+    // Getters y Setters
     public Long getSalario() {
         return salario;
     }
@@ -115,7 +118,8 @@ public class ContratoEntity implements Serializable {
     public void setFechaContratacion(Date fechaContratacion) {
         this.fechaContratacion = fechaContratacion;
     }
-
+    
+    // HashCode
     @Override
     public int hashCode() {
         int hash = 3;
@@ -126,7 +130,8 @@ public class ContratoEntity implements Serializable {
         hash = 67 * hash + Objects.hashCode(this.salario);
         return hash;
     }
-
+    
+    // Metodo equals
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -156,7 +161,8 @@ public class ContratoEntity implements Serializable {
         }
         return true;
     }
-
+    
+    // Metodo toString
     @Override
     public String toString() {
         return "ContratoEntity{" + "idContrato=" + idContrato + ", trabajador=" + trabajador + ", granja=" + granja + ", fechaContratacion=" + fechaContratacion + ", salario=" + salario + '}';

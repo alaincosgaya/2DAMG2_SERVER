@@ -15,14 +15,31 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author Jonathan Camacho
+ * @author Jonathan Camacho y Alain Cosgaya
  */
+
+@NamedQueries({
+    @NamedQuery(
+            name="despedirTrabajador", query="DELETE FROM ContratoEntity c "
+                    + "WHERE c.idContrato.trabajadorId=:idTrabajador AND c.idContrato.granjaId=:idGranja"
+    ),
+    @NamedQuery(
+	name="cambiarSueldo", query="UPDATE ContratoEntity c SET c.salario=:salario "
+                + "WHERE c.idContrato.trabajadorId=:idTrabajador AND c.idContrato.granjaId=:idGranja"
+    ),
+    @NamedQuery(
+            name="contratoTrabajador", query="SELECT c FROM ContratoEntity c "
+                    + "WHERE c.idContrato.granjaId=:idGranja AND c.idContrato.trabajadorId=:idTrabajador"
+    )
+})
 @Entity
 @Table(name="contrato", schema="G2Lauserri")
 @XmlRootElement

@@ -1,5 +1,6 @@
 package entidades;
 
+import com.sun.istack.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
@@ -10,14 +11,39 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
+ * JavaBean de AnimalEntity, con las queries, atributos,constructores, getters y
+ * setters, hashCode, equals y toString correspondientes.
  *
  * @author Jonathan Camacho
  */
+@NamedQueries({
+    @NamedQuery(
+            name = "animalesPorNombre", query = "SELECT a FROM AnimalEntity a WHERE a.nombreAnimal=:nombreAnimal"
+    )
+    ,
+    @NamedQuery(
+            name = "animalesPorTipo", query = "SELECT a FROM AnimalEntity a WHERE a.tipo=:tipo"
+    )
+    ,
+    @NamedQuery(
+            name = "animalesPorSexo", query = "SELECT a FROM AnimalEntity a WHERE a.sexo=:sexo"
+    )
+    ,
+    @NamedQuery(
+            name = "animalesPorEstado", query = "SELECT a FROM AnimalEntity a WHERE a.estado=:estado"
+    )
+    , 
+    @NamedQuery(
+            name = "modificacionAnimal", query = "SELECT a FROM AnimalEntity a  WHERE a.idAnimal=:idAnimal"
+    )
+})
 @Entity
 @Table(name = "animal", schema = "G2Lauserri")
 @XmlRootElement

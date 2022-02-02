@@ -47,14 +47,14 @@ public class UserEntityFacadeREST extends AbstractFacade<UserEntity> {
     @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void create(UserEntity entity) {
-        
+
         Cifrado cf = new Cifrado();
         Hash hash = new Hash();
         //String text = new String(cf.descifrarTexto(entity.getPassword().getBytes()));
         String text = Cifrado.decrypt(entity.getPassword());
-        
+
         System.out.println(text);
-        
+
         text = hash.cifrarTexto(text);
         entity.setPassword(text);
         super.create(entity);
@@ -64,15 +64,14 @@ public class UserEntityFacadeREST extends AbstractFacade<UserEntity> {
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void edit(@PathParam("id") Long id, UserEntity entity) {
-        
-        
+
         Cifrado cf = new Cifrado();
         Hash hash = new Hash();
         //String text = new String(cf.descifrarTexto(entity.getPassword().getBytes()));
         String text = Cifrado.decrypt(entity.getPassword());
-        
-        System.out.println("edit servidor : " +text );
-        
+
+        System.out.println("edit servidor : " + text);
+
         text = hash.cifrarTexto(text);
         entity.setPassword(text);
         super.edit(entity);
@@ -102,7 +101,7 @@ public class UserEntityFacadeREST extends AbstractFacade<UserEntity> {
     @Path("validarLogin/{username}/{password}")
     @Produces({MediaType.APPLICATION_XML})
     public List<UserEntity> validarLogin(@PathParam("username") String username, @PathParam("password") String password) {
-        
+
         List<UserEntity> users = null;
         //Cifrado cf = new cifrado();
         Hash hash = new Hash();
@@ -110,17 +109,13 @@ public class UserEntityFacadeREST extends AbstractFacade<UserEntity> {
         password = hash.cifrarTexto(password);
         try {
             users = em.createNamedQuery("validarLogin").setParameter("username", username).setParameter("password", password).getResultList();
-            if (!users.isEmpty()) {
-                StoredProcedureQuery query = em.createStoredProcedureQuery("G2Lauserri.login").registerStoredProcedureParameter(1, Long.class, ParameterMode.IN).setParameter(1, users.get(0).getId());
-                query.execute();
-            }
-            
+
         } catch (Exception e) {
-            
+
         }
         return users;
     }
-    
+
     @GET
     @Path("validatePassword/{username}/{passwd}")
     @Produces({MediaType.APPLICATION_XML})
@@ -133,12 +128,17 @@ public class UserEntityFacadeREST extends AbstractFacade<UserEntity> {
 
             String decryptPassword = Cifrado.decrypt(passwd);
 
-            user =  em.createNamedQuery("usuarioPorLogin")
+            user = em.createNamedQuery("usuarioPorLogin")
                     .setParameter("username", username)
                     .getResultList();
 
             if (!user.get(0).getPassword().equalsIgnoreCase(hash.cifrarTexto(decryptPassword))) {
                 throw new NotAuthorizedException("Las contraseñas no coinciden");
+            }
+            if (!user.isEmpty()) {
+                StoredProcedureQuery query = em.createStoredProcedureQuery("G2Lauserri.login").registerStoredProcedureParameter(1, Long.class, ParameterMode.IN).setParameter(1, user.get(0).getId());
+                query.execute();
+                System.out.println("furrula");
             }
 
         } catch (NoResultException e) {
@@ -146,7 +146,6 @@ public class UserEntityFacadeREST extends AbstractFacade<UserEntity> {
         }
         return user;
     }
-
 
     @GET
     @Path("count")
@@ -159,20 +158,20 @@ public class UserEntityFacadeREST extends AbstractFacade<UserEntity> {
     @Path("reset/{email}")
     @Produces({MediaType.APPLICATION_XML})
     public void resetContra(@PathParam("email") String email) {
-	
-	List<UserEntity> users = usuarioPorEmail(email);
-	if(!users.isEmpty()){
-                Mail ml = new Mail();
-        	Cifrado cf = new Cifrado();
-		String contra = cf.generarContra();
-                String hash = cf.encriptarContra(contra);
-		users.get(0).setPassword(hash);
-                String mail = users.get(0).getEmail();
-                Mail.sendEmail(mail, contra);
-		em.merge(users.get(0));
-                
-                em.flush();
-	}
+
+        List<UserEntity> users = usuarioPorEmail(email);
+        if (!users.isEmpty()) {
+            Mail ml = new Mail();
+            Cifrado cf = new Cifrado();
+            String contra = cf.generarContra();
+            String hash = cf.encriptarContra(contra);
+            users.get(0).setPassword(hash);
+            String mail = users.get(0).getEmail();
+            Mail.sendEmail(mail, contra);
+            em.merge(users.get(0));
+
+            em.flush();
+        }
     }
 
     @GET
@@ -184,11 +183,11 @@ public class UserEntityFacadeREST extends AbstractFacade<UserEntity> {
             users = em.createNamedQuery("usuarioPorLogin").setParameter("username", username).getResultList();
             //em.merge(users);
         } catch (Exception e) {
-            
+
         }
         return users;
     }
-    
+
     @GET
     @Path("usuarioPorEmail/{email}")
     @Produces({MediaType.APPLICATION_XML})
@@ -198,14 +197,14 @@ public class UserEntityFacadeREST extends AbstractFacade<UserEntity> {
             users = em.createNamedQuery("usuarioPorEmail").setParameter("email", email).getResultList();
             //em.merge(users);
         } catch (Exception e) {
-            
+
         }
         return users;
     }
-    
+
     @Override
     protected EntityManager getEntityManager() {
         return em;
     }
-    
+
 }

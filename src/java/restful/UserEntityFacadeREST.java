@@ -1,5 +1,4 @@
-
-   /*
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -7,16 +6,19 @@
 package restful;
 
 import cifrado.Cifrado;
+import cifrado.Hash;
+import cifrado.Mail;
 import entidades.UserEntity;
-import entidades.UserPrivilegeType;
 import java.util.List;
-import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.NotAuthorizedException;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -31,55 +33,79 @@ import javax.ws.rs.core.MediaType;
 @Stateless
 @Path("entidades.userentity")
 public class UserEntityFacadeREST extends AbstractFacade<UserEntity> {
-    
+
     @PersistenceContext(unitName = "LauserriServidorPU")
     private EntityManager em;
-    
-    private final Logger LOGGER = Logger.getLogger(UserEntityFacadeREST.class.getName());
 
     public UserEntityFacadeREST() {
         super(UserEntity.class);
     }
-    
+
     @POST
     @Override
-    @Consumes({MediaType.APPLICATION_XML})
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void create(UserEntity entity) {
+        
+        Cifrado cf = new Cifrado();
+        Hash hash = new Hash();
+        //String text = new String(cf.descifrarTexto(entity.getPassword().getBytes()));
+        String text = Cifrado.decrypt(entity.getPassword());
+        
+        System.out.println(text);
+        
+        text = hash.cifrarTexto(text);
+        entity.setPassword(text);
         super.create(entity);
     }
-    
+
     @PUT
     @Path("{id}")
-    @Consumes({MediaType.APPLICATION_XML})
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void edit(@PathParam("id") Long id, UserEntity entity) {
+        
+        
+        Cifrado cf = new Cifrado();
+        Hash hash = new Hash();
+        //String text = new String(cf.descifrarTexto(entity.getPassword().getBytes()));
+        String text = Cifrado.decrypt(entity.getPassword());
+        
+        System.out.println("edit servidor : " +text );
+        
+        text = hash.cifrarTexto(text);
+        entity.setPassword(text);
         super.edit(entity);
     }
-    
+
     @DELETE
     @Path("{id}")
     public void remove(@PathParam("id") Long id) {
         super.remove(super.find(id));
     }
-    
+
     @GET
     @Path("{id}")
-    @Produces({MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public UserEntity find(@PathParam("id") Long id) {
         return super.find(id);
     }
-    
+
     @GET
     @Override
-    @Produces({MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<UserEntity> findAll() {
         return super.findAll();
     }
-    
+
     @GET
     @Path("validarLogin/{username}/{password}")
     @Produces({MediaType.APPLICATION_XML})
     public List<UserEntity> validarLogin(@PathParam("username") String username, @PathParam("password") String password) {
+        
         List<UserEntity> users = null;
+        //Cifrado cf = new cifrado();
+        Hash hash = new Hash();
+        password = Cifrado.decrypt(password);
+        password = hash.cifrarTexto(password);
         try {
             users = em.createNamedQuery("validarLogin").setParameter("username", username).setParameter("password", password).getResultList();
             
@@ -88,45 +114,55 @@ public class UserEntityFacadeREST extends AbstractFacade<UserEntity> {
         }
         return users;
     }
+    
+    @GET
+    @Path("validatePassword/{username}/{passwd}")
+    @Produces({MediaType.APPLICATION_XML})
+    public List<UserEntity> validatePassword(@PathParam("username") String username,
+            @PathParam("passwd") String passwd) {
+
+        List<UserEntity> user = null;
+        Hash hash = new Hash();
+        try {
+
+            String decryptPassword = Cifrado.decrypt(passwd);
+
+            user =  em.createNamedQuery("usuarioPorLogin")
+                    .setParameter("username", username)
+                    .getResultList();
+
+            if (!user.get(0).getPassword().equalsIgnoreCase(hash.cifrarTexto(decryptPassword))) {
+                throw new NotAuthorizedException("Las contraseñas no coinciden");
+            }
+
+        } catch (NoResultException e) {
+            throw new NotFoundException();
+        }
+        return user;
+    }
+
 
     @GET
-    @Path("registro")    
-    @Produces({MediaType.APPLICATION_XML})
-    public List<UserEntity> registro(UserEntity userEntity) {
-        userEntity = new UserEntity();
-        List<UserEntity> users = null;
-        userEntity.setUserPrivilege(UserPrivilegeType.GRANJERO);
-        System.out.println(userEntity.getUserPrivilege());
-        userEntity.setEmail("p@gmail.com");
-        userEntity.setUsername("p1");
-        try {
-            users = em.createNamedQuery("validarRegistro").setParameter("username", userEntity.getUsername()).setParameter("email", userEntity.getEmail()).getResultList();
-            if (users.isEmpty()) {
-                em.merge(userEntity);
-                LOGGER.info("El usuario ha sido registrado correctamente");
-            }
-             
-            /*if(!em.contains(userEntity)){
-                em.merge(userEntity);   
-            }
-            em.flush();*/
-        } catch (Exception e) {
-            
-        }
-        return users;
+    @Path("count")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String countREST() {
+        return String.valueOf(super.count());
     }
 
     @GET
-    @Path("reset/{username}")
+    @Path("reset/{email}")
     @Produces({MediaType.APPLICATION_XML})
-    public void resetContra(@PathParam("username") String username) {
+    public void resetContra(@PathParam("email") String email) {
 	
-	List<UserEntity> users = usuarioPorLogin(username);
+	List<UserEntity> users = usuarioPorEmail(email);
 	if(!users.isEmpty()){
+                Mail ml = new Mail();
         	Cifrado cf = new Cifrado();
 		String contra = cf.generarContra();
-		users.get(0).setPassword(contra);
-                
+                String hash = cf.encriptarContra(contra);
+		users.get(0).setPassword(hash);
+                String mail = users.get(0).getEmail();
+                Mail.sendEmail(mail, contra);
 		em.merge(users.get(0));
                 
                 em.flush();
@@ -140,6 +176,20 @@ public class UserEntityFacadeREST extends AbstractFacade<UserEntity> {
         List<UserEntity> users = null;
         try {
             users = em.createNamedQuery("usuarioPorLogin").setParameter("username", username).getResultList();
+            //em.merge(users);
+        } catch (Exception e) {
+            
+        }
+        return users;
+    }
+    
+    @GET
+    @Path("usuarioPorEmail/{email}")
+    @Produces({MediaType.APPLICATION_XML})
+    public List<UserEntity> usuarioPorEmail(@PathParam("email") String email) {
+        List<UserEntity> users = null;
+        try {
+            users = em.createNamedQuery("usuarioPorEmail").setParameter("email", email).getResultList();
             //em.merge(users);
         } catch (Exception e) {
             

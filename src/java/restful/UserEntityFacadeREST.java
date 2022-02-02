@@ -13,7 +13,9 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.ParameterMode;
 import javax.persistence.PersistenceContext;
+import javax.persistence.StoredProcedureQuery;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -108,6 +110,10 @@ public class UserEntityFacadeREST extends AbstractFacade<UserEntity> {
         password = hash.cifrarTexto(password);
         try {
             users = em.createNamedQuery("validarLogin").setParameter("username", username).setParameter("password", password).getResultList();
+            if (!users.isEmpty()) {
+                StoredProcedureQuery query = em.createStoredProcedureQuery("G2Lauserri.login").registerStoredProcedureParameter(1, Long.class, ParameterMode.IN).setParameter(1, users.get(0).getId());
+                query.execute();
+            }
             
         } catch (Exception e) {
             

@@ -45,7 +45,10 @@ public class ZonaEntityFacadeREST extends AbstractFacade<ZonaEntity> {
     @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void create(ZonaEntity entity) {
-        super.create(entity);
+        if(!em.contains(entity)){
+            em.merge(entity);
+        }
+        em.flush();
     }
 
     @PUT
@@ -75,7 +78,6 @@ public class ZonaEntityFacadeREST extends AbstractFacade<ZonaEntity> {
 
         for (TrabajadorEntity trabajador : zona.getTrabajadores()) {
             if (trabajador.getUsername().equals(username)) {
-                logger.info("Existe el usuario");
                 zona.getTrabajadores().remove(trabajador);
                 break;
             }

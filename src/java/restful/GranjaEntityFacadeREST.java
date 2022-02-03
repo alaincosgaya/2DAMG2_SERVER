@@ -5,7 +5,6 @@
  */
 package restful;
 
-import com.sun.corba.se.impl.ior.ObjectReferenceFactoryImpl;
 import entidades.GranjaEntity;
 import java.util.List;
 import java.util.logging.Level;
@@ -25,7 +24,7 @@ import javax.ws.rs.core.MediaType;
 
 /**
  *
- * @author Alejandro Gómez
+ * @author Alejandro Gomez
  */
 @Stateless
 @Path("entidades.granjaentity")
@@ -40,14 +39,19 @@ public class GranjaEntityFacadeREST extends AbstractFacade<GranjaEntity> {
 
     @POST
     @Override
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Consumes({MediaType.APPLICATION_XML})
     public void create(GranjaEntity entity) {
-        super.create(entity);
+//        super.create(entity);
+        if (!em.contains(entity)) {
+            em.merge(entity);
+        }
+        em.flush();
+
     }
 
     @PUT
     @Path("{id}")
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Consumes({MediaType.APPLICATION_XML})
     public void edit(@PathParam("id") Long id, GranjaEntity entity) {
         super.edit(entity);
     }
@@ -60,21 +64,21 @@ public class GranjaEntityFacadeREST extends AbstractFacade<GranjaEntity> {
 
     @GET
     @Path("{id}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML})
     public GranjaEntity find(@PathParam("id") Long id) {
         return super.find(id);
     }
 
     @GET
     @Override
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML})
     public List<GranjaEntity> findAll() {
         return super.findAll();
     }
 
     @GET
     @Path("{from}/{to}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML})
     public List<GranjaEntity> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
         return super.findRange(new int[]{from, to});
     }
@@ -124,7 +128,7 @@ public class GranjaEntityFacadeREST extends AbstractFacade<GranjaEntity> {
             LOGGER.info("Listado de la granja con esa idq");
             granja = (GranjaEntity) em.createNamedQuery("granjaPorId").setParameter("idGranja", idGranja).getSingleResult();
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "No hay ninguna granja existente con ese nombre {0} ", e.getLocalizedMessage());
+            LOGGER.log(Level.SEVERE, "No hay ninguna granja existente con esa id {0} ", e.getLocalizedMessage());
         }
         return granja;
     }
@@ -157,21 +161,19 @@ public class GranjaEntityFacadeREST extends AbstractFacade<GranjaEntity> {
         return granjas;
     }
     
-    /*@PUT
-    @Path("updateNombreGranja/{idGranja}/{nombreGranjaNuevo}")
-    @Consumes({MediaType.APPLICATION_XML})
-    public GranjaEntity  updateNombreDeLaGranja(@PathParam("idGranja") Long idGranja, @PathParam("nombreGranjaNuevo") String nombreGranjaNuevo, GranjaEntity granja) {
-        try{
-            LOGGER.info("Cambio en la granja seleccionada por su id");
-            em.createNamedQuery("updateNombreDeLaGranja").setParameter("idGranja", idGranja).executeUpdate();
-            granja.setNombreGranja(nombreGranjaNuevo);
-        }catch (Exception e){
-            LOGGER.log(Level.SEVERE, "Fallo al intentar cambiar el nombre a esa granja {0} ", e.getLocalizedMessage());
+    @GET
+    @Path("granjasNoTrabajador/{username}")
+    @Produces({MediaType.APPLICATION_XML})
+    public List<GranjaEntity> GranjasEnLasQueNoTrabajaEseTrabajador(@PathParam("username") String username) {
+        List<GranjaEntity> granjas = null;
+        try {
+            LOGGER.info("Listado de las granjas donde trabaja ese trabajador");
+            granjas = em.createNamedQuery("granjasEnLasQueNoTrabajaEseTrabajador").setParameter("username", username).getResultList();
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "No hay ningun trabajador que trabaje en esa granja {0} ", e.getLocalizedMessage());
         }
-        em.flush();
-        
-        return (GranjaEntity) em.createNamedQuery("granjaPorId").setParameter("idGranja", idGranja).getSingleResult();
-    }*/
+        return granjas;
+    }
     
     @GET
     @Path("updateNombreGranja/{idGranja}/{nombreGranjaNuevo}")
@@ -188,13 +190,6 @@ public class GranjaEntityFacadeREST extends AbstractFacade<GranjaEntity> {
         
         em.flush();
     }
-    
-    /*@PUT
-    @Path("{id}")
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void edit1(@PathParam("id") Long id, GranjaEntity entity) {
-        super.edit(entity);
-    }*/
     
     @DELETE
     @Path("deleteGranja/{idGranja}")

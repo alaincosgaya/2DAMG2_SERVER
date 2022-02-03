@@ -24,6 +24,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.PathSegment;
 
 /**
+ * RESTful de la entidad de contratos
  *
  * @author Alain Cosgaya
  */
@@ -56,15 +57,26 @@ public class ContratoEntityFacadeREST extends AbstractFacade<ContratoEntity> {
         return key;
     }
 
+    /**
+     * Constructor de contratos.
+     */
     public ContratoEntityFacadeREST() {
         super(ContratoEntity.class);
     }
 
+    /**
+     * Metodo de creacion de contratos
+     *
+     * @param entity
+     */
     @POST
     @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void create(ContratoEntity entity) {
-        super.create(entity);
+        if (!em.contains(entity)) {
+            em.merge(entity);
+        }
+        em.flush();
     }
 
     @PUT
@@ -74,6 +86,11 @@ public class ContratoEntityFacadeREST extends AbstractFacade<ContratoEntity> {
         super.edit(entity);
     }
 
+    /**
+     * Metodo de borrado de contratos.
+     *
+     * @param id
+     */
     @DELETE
     @Path("{id}")
     public void remove(@PathParam("id") PathSegment id) {
@@ -81,6 +98,12 @@ public class ContratoEntityFacadeREST extends AbstractFacade<ContratoEntity> {
         super.remove(super.find(key));
     }
 
+    /**
+     * Metodo de busqueda de un contrato por id
+     *
+     * @param id
+     * @return
+     */
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML})
@@ -89,6 +112,11 @@ public class ContratoEntityFacadeREST extends AbstractFacade<ContratoEntity> {
         return super.find(key);
     }
 
+    /**
+     * Metodo de busqueda de todos los contratos
+     *
+     * @return Coleccion de contratos
+     */
     @GET
     @Override
     @Produces({MediaType.APPLICATION_XML})
@@ -96,7 +124,12 @@ public class ContratoEntityFacadeREST extends AbstractFacade<ContratoEntity> {
         return super.findAll();
     }
 
-
+    /**
+     * Metodo para el despido de un trabajador
+     *
+     * @param idTrabajador id del trabajador a despedir
+     * @param idGranja id de la granja en la que está contratado
+     */
     @DELETE
     @Path("despedir/{idTrabajador}/{idGranja}")
     public void despedirTrabajador(@PathParam("idTrabajador") Long idTrabajador, @PathParam("idGranja") Long idGranja) {
@@ -111,7 +144,7 @@ public class ContratoEntityFacadeREST extends AbstractFacade<ContratoEntity> {
 
     }
 
-    @GET
+    /*@GET
     @Path("cambiarSueldo")
     public void cambiarSueldo(ContratoEntity contrato) {
         try {
@@ -124,9 +157,17 @@ public class ContratoEntityFacadeREST extends AbstractFacade<ContratoEntity> {
         } catch (Exception e) {
 
         }
-    }
-    /*@GET
+    }*/
+    /**
+     * Metodo para el cambio de salario definido en un contrato.
+     *
+     * @param idTrabajador id del trabajador del contrato
+     * @param idGranja id de la granja del contrato
+     * @param salario nuevo salario del contrato
+     */
+    @GET
     @Path("cambiarSueldo/{idTrabajador}/{idGranja}/{salario}")
+    @Produces({MediaType.APPLICATION_XML})
     public void cambiarSueldo(@PathParam("idTrabajador") Long idTrabajador,
             @PathParam("idGranja") Long idGranja, @PathParam("salario") Long salario) {
         ContratoEntity contrato = null;
@@ -146,7 +187,65 @@ public class ContratoEntityFacadeREST extends AbstractFacade<ContratoEntity> {
             LOGGER.severe("Error al modificar datos del trabajador. "
                     + e.getLocalizedMessage());
         }
-    }*/
+
+    }
+
+    /**
+     * Metodo de busqueda de contratos de un granjero
+     * @param idGranjero id del granjero
+     * @return Coleccion de contratos
+     */
+    @GET
+    @Path("contratosGranjero/{idGranjero}")
+    @Produces({MediaType.APPLICATION_XML})
+    public List<ContratoEntity> contratosGranjero(@PathParam("idGranjero") Long idGranjero) {
+        List<ContratoEntity> contratos = null;
+        try {
+            contratos = em.createNamedQuery("contratosGranjero").setParameter("idGranjero", idGranjero).getResultList();
+        } catch (Exception e) {
+            LOGGER.severe("Error al listar los contratos por granjero. "
+                    + e.getLocalizedMessage());
+        }
+        return contratos;
+    }
+
+    /**
+     * Metodo de busqueda de contratos de un trabajador
+     * @param idTrabajador id del trabajador
+     * @return Coleccion de contratos
+     */
+    @GET
+    @Path("contratosTrabajador/{idTrabajador}")
+    @Produces({MediaType.APPLICATION_XML})
+    public List<ContratoEntity> contratosTrabajador(@PathParam("idTrabajador") Long idTrabajador) {
+        List<ContratoEntity> contratos = null;
+        try {
+            contratos = em.createNamedQuery("contratosTrabajador").setParameter("idTrabajador", idTrabajador).getResultList();
+        } catch (Exception e) {
+            LOGGER.severe("Error al listar los contratos por granjero. "
+                    + e.getLocalizedMessage());
+        }
+        return contratos;
+    }
+
+    /**
+     * Metodo de busqueda de contratos en una granja
+     * @param idGranja id de la granja
+     * @return Coleccion de contratos
+     */
+    @GET
+    @Path("contratosGranja/{idGranja}")
+    @Produces({MediaType.APPLICATION_XML})
+    public List<ContratoEntity> contratosGranja(@PathParam("idGranja") Long idGranja) {
+        List<ContratoEntity> contratos = null;
+        try {
+            contratos = em.createNamedQuery("contratosGranja").setParameter("idGranja", idGranja).getResultList();
+        } catch (Exception e) {
+            LOGGER.severe("Error al listar los contratos por granjero. "
+                    + e.getLocalizedMessage());
+        }
+        return contratos;
+    }
 
     @Override
     protected EntityManager getEntityManager() {

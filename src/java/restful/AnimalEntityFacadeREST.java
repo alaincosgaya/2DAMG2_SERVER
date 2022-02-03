@@ -250,7 +250,7 @@ public class AnimalEntityFacadeREST extends AbstractFacade<AnimalEntity> {
                     muerto = true;
                     break;
                 }
-            }
+            } 
             if (muerto) {
                 em.remove(animales.get(0));
             }

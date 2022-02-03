@@ -185,7 +185,6 @@ public class AnimalEntity implements Serializable {
         }
         return true;
     }
-
     @Override
     public String toString() {
         return "Animal{" + "idAnimal=" + idAnimal + ", nombreAnimel=" + nombreAnimal + ", tipo=" + tipo + ", estado=" + estado + ", fechaNacimiento=" + fechaNacimiento + ", sexoAnimal=" + sexo + ", zona=" + zona + '}';

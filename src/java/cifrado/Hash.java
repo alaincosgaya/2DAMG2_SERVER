@@ -10,10 +10,11 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.xml.bind.DatatypeConverter;
 
 /**
  *
- * @author 2dam
+ * @author Idoia Ormaetxea
  */
 public class Hash {
     
@@ -29,7 +30,7 @@ public class Hash {
             //
             System.out.println(new String(digest)+" digest hash");
             hash = new String(digest);
-            //
+            hash = DatatypeConverter.printHexBinary(digest).toLowerCase();
             System.out.println(hash +" hash hash");
         } catch (NoSuchAlgorithmException ex) {
             Logger.getLogger(Hash.class.getName()).log(Level.SEVERE, null, ex);

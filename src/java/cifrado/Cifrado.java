@@ -74,23 +74,6 @@ public class Cifrado {
 
         return hasheado;
     }
-
-    
-/*
-    public static byte[] decrypt(byte[] ciphertext) {
-        Cipher cipher;
-        byte[] bs = null;
-        PrivateKey key;
-        try {
-            key = readPrivateKey("./src/files/private.key");
-            cipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA1AndMGF1Padding");
-            cipher.init(Cipher.DECRYPT_MODE, key);
-            bs = cipher.doFinal(ciphertext);
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException | IOException | InvalidKeySpecException ex) {
-            Logger.getLogger(Cifrado.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return bs;
-    }*/
     
     public static String decrypt(String plaintext) {
         
@@ -98,7 +81,7 @@ public class Cifrado {
         byte[] bs = null;
         //PublicKey key;
         try {
-            Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+            Cipher cipher = Cipher.getInstance("RSA");
             //key = readPublicKey("./cifrado/public.key");
             
             cipher.init(Cipher.DECRYPT_MODE, readPrivateKey());
@@ -159,66 +142,6 @@ public class Cifrado {
         }
         return ret;
     }
-/*
-    private static String mensaje = "lauserrig2@gmail.com";
-    private static String clave = "abcd1234";
-
-    public String cipherData(String clave, String mensaje) {
-        String data = null;
-        byte[] ret = null;
-
-        KeySpec keySpec = null;
-        SecretKeyFactory secretKeyFactory = null;
-        try {
-
-            // Obtenemos el keySpec
-            keySpec = new PBEKeySpec(clave.toCharArray(), salt, 65536, 128); // AES-128
-
-            // Obtenemos una instancide de SecretKeyFactory con el algoritmo "PBKDF2WithHmacSHA1"
-            secretKeyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-            // Generamos la clave
-            byte[] key = secretKeyFactory.generateSecret(keySpec).getEncoded();
-
-            // Creamos un SecretKey usando la clave + salt
-            SecretKey privateKey = new SecretKeySpec(key, 0, key.length, "AES");
-
-            // Obtenemos una instancide de Cipher con el algoritmos que vamos a usar "AES/CBC/PKCS5Padding"
-            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
-
-            // Iniciamos el Cipher en ENCRYPT_MODE y le pasamos la clave privada
-            cipher.init(Cipher.ENCRYPT_MODE, privateKey);
-            // Le decimos que cifre (método doFinal())
-            byte[] encodedMessage = cipher.doFinal(mensaje.getBytes());
-
-            // Obtenemos el vector CBC del Cipher (método getIV())
-            this.iv = cipher.getIV();
-
-            // Guardamos el mensaje codificado: IV (16 bytes) + Mensaje
-            byte[] combined = concatArrays(iv, encodedMessage);
-
-            // Escribimos el fichero cifrado 
-            File f = new File("C:/Users/2dam/Documents/NetBeansProjects/2DAMG2_SERVER/src/java/cifrado/config.properties");
-            f.getParentFile().mkdirs();
-            fileWriter(f.getAbsolutePath(), combined);
-
-            // Retornamos el texto cifrado
-            data = DatatypeConverter.printHexBinary(combined);
-            //ret = new String(encodedMessage);
-            //ret = combined;
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return data;
-    }
-
-    public static void main(String[] args) {
-        //launch(args);
-
-        Cifrado ejemploAES = new Cifrado();
-        String mensajeCifrado = ejemploAES.cipherData(clave, mensaje);
-        System.out.println(mensajeCifrado);
-    }*/
 
     private byte[] concatArrays(byte[] array1, byte[] array2) {
         byte[] ret = new byte[array1.length + array2.length];

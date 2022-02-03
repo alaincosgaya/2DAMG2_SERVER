@@ -30,7 +30,7 @@ import javax.ws.rs.core.MediaType;
 
 /**
  *
- * @author 2dam
+ * @author Idoia Ormaetxea
  */
 @Stateless
 @Path("entidades.userentity")
@@ -75,6 +75,25 @@ public class UserEntityFacadeREST extends AbstractFacade<UserEntity> {
         text = hash.cifrarTexto(text);
         entity.setPassword(text);
         super.edit(entity);
+    }
+    
+    @PUT
+    @Path("editPasswd/{passwd}")
+    @Consumes({MediaType.APPLICATION_XML})
+    public void editPasswd(@PathParam("passwd") String passwd, UserEntity entity ) {
+
+        Cifrado cf = new Cifrado();
+        Hash hash = new Hash();
+        //String text = new String(cf.descifrarTexto(entity.getPassword().getBytes()));
+        String text = Cifrado.decrypt(passwd);
+
+        System.out.println("edit servidor : " + text);
+
+        text = hash.cifrarTexto(text);
+        entity.setPassword(text);
+        //super.edit(entity);
+        em.merge(entity);
+        em.flush();
     }
 
     @DELETE
@@ -131,11 +150,11 @@ public class UserEntityFacadeREST extends AbstractFacade<UserEntity> {
             user = em.createNamedQuery("usuarioPorLogin")
                     .setParameter("username", username)
                     .getResultList();
-
+            if (!user.isEmpty()) {
             if (!user.get(0).getPassword().equalsIgnoreCase(hash.cifrarTexto(decryptPassword))) {
                 throw new NotAuthorizedException("Las contraseñas no coinciden");
             }
-            if (!user.isEmpty()) {
+            
                 StoredProcedureQuery query = em.createStoredProcedureQuery("G2Lauserri.login").registerStoredProcedureParameter(1, Long.class, ParameterMode.IN).setParameter(1, user.get(0).getId());
                 query.execute();
                 System.out.println("furrula");
